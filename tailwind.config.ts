@@ -1,0 +1,77 @@
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        background: "var(--background)",
+        foreground: "var(--foreground)",
+        card: "var(--card)",
+        "card-foreground": "var(--card-foreground)",
+        popover: "var(--popover)",
+        "popover-foreground": "var(--popover-foreground)",
+        muted: "var(--muted)",
+        "muted-foreground": "var(--muted-foreground)",
+        accent: "var(--accent)",
+        "accent-foreground": "var(--accent-foreground)",
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)",
+        sacred: {
+          50: "#FCFAF6",
+          100: "#F7F3EB",
+          200: "#EFE5D5",
+          300: "#E2D0B5",
+          400: "#D1B48D",
+          500: "#BA9463",
+          600: "#A2794A",
+          700: "#865F3A",
+          800: "#6D4C30",
+          900: "#593E2B",
+          950: "#2D1E16",
+        },
+        saffron: {
+          50: "#FFFBEB",
+          100: "#FEF3C7",
+          200: "#FDE68A",
+          300: "#FCD34D",
+          400: "#FBBF24",
+          500: "#F59E0B",
+          600: "#D97706",
+          700: "#B45309",
+          800: "#92400E",
+          900: "#78350F",
+          950: "#451A03",
+        },
+        gold: {
+          50: "#FEFCE8",
+          100: "#FEF9C3",
+          200: "#FEF08A",
+          300: "#FDE047",
+          400: "#FACC15",
+          500: "#EAB308",
+          600: "#CA8A04",
+          700: "#A16207",
+          800: "#854D0E",
+          900: "#713F12",
+          950: "#422006",
+        },
+      },
+      fontFamily: {
+        serif: ["var(--font-cinzel)", "Georgia", "serif"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+      },
+      boxShadow: {
+        card: "0 2px 12px -2px rgba(0, 0, 0, 0.05), 0 4px 20px 0 rgba(0, 0, 0, 0.03)",
+        elevated: "0 10px 30px -5px rgba(180, 83, 9, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.05)",
+      },
+    },
+  },
+  plugins: [],
+};
+export default config;

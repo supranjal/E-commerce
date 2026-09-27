@@ -1,0 +1,250 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  ESEWA
+  KHALTI
+  CARD
+  CASH_ON_DELIVERY
+}
+
+enum VerificationStatus {
+  VERIFIED
+  SAMPLE_DEMO
+  PENDING_REVIEW
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(CUSTOMER)
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders  Order[]
+  cart    Cart?
+  reviews Review[]
+
+  @@index([email])
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String   @db.Text
+  price       Float    // Base price in NPR
+  mukhi       Int?     // 1 to 14, or null for accessories/special combinations
+  isSpecial   Boolean  @default(false) // e.g. Gauri Shankar, Trijuti, Ganesh
+  origin      String   // e.g. "Nepal (Sankhuwasabha)", "Indonesia (Java)"
+  size        String?  // e.g. "22mm - 24mm"
+  weight      String?  // e.g. "3.85 grams"
+  shape       String?  // e.g. "Natural Oval", "Round"
+  stock       Int      @default(1)
+  featured    Boolean  @default(false)
+  isCertified Boolean  @default(false)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  images       ProductImage[]
+  certificates Certificate[]
+  cartItems    CartItem[]
+  orderItems   OrderItem[]
+  reviews      Review[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([mukhi])
+  @@index([categoryId])
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  altText   String?
+  isPrimary Boolean @default(false)
+  sortOrder Int     @default(0)
+
+  @@index([productId])
+}
+
+model Certificate {
+  id                 String             @id @default(cuid())
+  productId          String
+  product            Product            @relation(fields: [productId], references: [id], onDelete: Cascade)
+  certificateNumber  String             @unique // e.g. "RK-DEMO-00001"
+  mukhi              Int
+  origin             String
+  dimensions         String?            // e.g. "23.4 x 21.1 mm"
+  weightGrams        Float?             // e.g. 3.42
+  inspectionDate     DateTime           @default(now())
+  laboratory         String             @default("RudraKart Authenticity Lab (Sample/Academic Data)")
+  xrayStatus         String?            @default("Clear natural internal seed chambers observed")
+  microscopicCheck   String?            @default("Natural thorny ridges; no artificial carving, glue, or lines detected")
+  certificateUrl     String?
+  verificationStatus VerificationStatus @default(VERIFIED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([certificateNumber])
+  @@index([productId])
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String  @id @default(cuid())
+  cartId    String
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity  Int     @default(1)
+
+  @@unique([cartId, productId])
+}
+
+model Order {
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Restrict)
+  orderNumber   String        @unique // e.g. "RK-2026-1001"
+  total         Float
+  currency      String        @default("NPR")
+  status        OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(UNPAID)
+  paymentMethod PaymentMethod
+  transactionId String?
+
+  // Shipping details
+  customerName    String
+  customerEmail   String
+  customerPhone   String
+  shippingAddress String
+  city            String
+  country         String  @default("Nepal")
+  postalCode      String?
+  notes           String?
+  trackingNumber  String?
+
+  items               OrderItem[]
+  paymentTransactions PaymentTransaction[]
+  emailLogs           OrderEmailLog[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  @@index([userId])
+  @@index([orderNumber])
+}
+
+model PaymentTransaction {
+  id                 String         @id @default(cuid())
+  transactionId      String         @unique
+  orderId            String
+  order              Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  amount             Float
+  currency           String         @default("NPR")
+  paymentMethod      PaymentMethod
+  paymentStatus      PaymentStatus  @default(PAID)
+  transactionHash    String         // SHA-256 hash of canonical transaction data
+  digitalSignature   String         @db.Text // RSA-SHA256 signature
+  signatureAlgorithm String         @default("RSA-SHA256")
+  canonicalPayload   String?        @db.Text // Exact canonical JSON string signed
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  @@index([orderId])
+  @@index([transactionId])
+}
+
+model OrderEmailLog {
+  id               String   @id @default(cuid())
+  orderId          String
+  order            Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  email            String
+  notificationType String   // ORDER_CONFIRMED | ORDER_PROCESSING | ORDER_SHIPPED | ORDER_DELIVERED
+  status           String   @default("SENT") // SENT | DEV_LOGGED | FAILED
+  sentAt           DateTime @default(now())
+  errorMessage     String?  @db.Text
+
+  @@index([orderId])
+  @@index([notificationType])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  quantity  Int
+  price     Float
+
+  @@index([orderId])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  rating    Int      // 1 to 5
+  comment   String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
