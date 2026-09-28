@@ -11,7 +11,7 @@ interface CartStore {
   items: CartItem[];
   currency: Currency;
   usdRate: number;
-  addItem: (product: ProductItem, quantity?: number) => void;
+  addItem: (product: ProductItem, quantity?: number) => boolean;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -29,22 +29,32 @@ export const useCartStore = create<CartStore>()(
       usdRate: 135.0,
 
       addItem: (product, quantity = 1) => {
+        if (!Number.isInteger(quantity) || quantity < 1 || product.stock < 1) {
+          return false;
+        }
         const currentItems = get().items;
         const existingIndex = currentItems.findIndex(
-          (item) => item.product.id === product.id
+          (item) => item.product.id === product.id,
         );
 
         if (existingIndex > -1) {
           const updated = [...currentItems];
           const newQty = updated[existingIndex].quantity + quantity;
-          // Validate stock
-          if (newQty <= (product.stock || 10)) {
+          if (
+            Number.isInteger(quantity) &&
+            quantity > 0 &&
+            newQty <= product.stock
+          ) {
             updated[existingIndex].quantity = newQty;
             set({ items: updated });
+            return true;
           }
-        } else {
+          return false;
+        } else if (quantity <= product.stock) {
           set({ items: [...currentItems, { product, quantity }] });
+          return true;
         }
+        return false;
       },
 
       removeItem: (productId) => {
@@ -60,7 +70,7 @@ export const useCartStore = create<CartStore>()(
         }
         const updated = get().items.map((item) => {
           if (item.product.id === productId) {
-            const safeQty = Math.min(quantity, item.product.stock || 10);
+            const safeQty = Math.min(quantity, item.product.stock);
             return { ...item, quantity: safeQty };
           }
           return item;
@@ -83,7 +93,7 @@ export const useCartStore = create<CartStore>()(
       getSubtotal: () => {
         return get().items.reduce(
           (total, item) => total + item.product.price * item.quantity,
-          0
+          0,
         );
       },
 
@@ -93,7 +103,7 @@ export const useCartStore = create<CartStore>()(
       },
     }),
     {
-      name: "rudrakart-cart-storage",
-    }
-  )
+      name: "rudrakart-cart-storage-v2",
+    },
+  ),
 );

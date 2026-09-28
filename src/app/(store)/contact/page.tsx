@@ -1,5 +1,13 @@
 import { MapPin, Mail, Phone, Clock, Send } from "lucide-react";
+import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
+
+export const metadata: Metadata = {
+  title: "Contact RudraKart",
+  description:
+    "Contact RudraKart with questions about products, orders, or the academic e-commerce demonstration.",
+  alternates: { canonical: "/contact" },
+};
 
 export default function ContactPage() {
   return (
@@ -9,7 +17,8 @@ export default function ContactPage() {
           Contact RudraKart
         </h1>
         <p className="text-base text-sacred-800 max-w-xl mx-auto leading-relaxed">
-          Have questions about specific Mukhis, laboratory certificates, or order shipping? Reach out to our customer care team.
+          Have questions about specific Mukhis, laboratory certificates, or
+          order shipping? Reach out to our customer care team.
         </p>
       </div>
 
@@ -24,40 +33,60 @@ export default function ContactPage() {
             <div className="flex items-start gap-3">
               <MapPin className="w-5 h-5 text-saffron-700 flex-shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold block text-sacred-900">Kathmandu Office & Quality Lab</span>
-                <span className="text-muted-foreground">Baluwatar-04, Kathmandu, Bagmati Province, Nepal</span>
+                <span className="font-bold block text-sacred-900">
+                  Kathmandu Office & Quality Lab
+                </span>
+                <span className="text-muted-foreground">
+                  Baluwatar-04, Kathmandu, Bagmati Province, Nepal
+                </span>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <MapPin className="w-5 h-5 text-saffron-700 flex-shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold block text-sacred-900">Sourcing Depot</span>
-                <span className="text-muted-foreground">Chainpur, Sankhuwasabha District, Koshi Province, Nepal</span>
+                <span className="font-bold block text-sacred-900">
+                  Sourcing Depot
+                </span>
+                <span className="text-muted-foreground">
+                  Chainpur, Sankhuwasabha District, Koshi Province, Nepal
+                </span>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <Mail className="w-5 h-5 text-saffron-700 flex-shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold block text-sacred-900">Email Inquiries</span>
-                <span className="text-muted-foreground">support@rudrakart.com</span>
+                <span className="font-bold block text-sacred-900">
+                  Email Inquiries
+                </span>
+                <span className="text-muted-foreground">
+                  support@rudrakart.com
+                </span>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <Phone className="w-5 h-5 text-saffron-700 flex-shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold block text-sacred-900">Helpline</span>
-                <span className="text-muted-foreground">+977 1 4412345 / +977 9801234567</span>
+                <span className="font-bold block text-sacred-900">
+                  Helpline
+                </span>
+                <span className="text-muted-foreground">
+                  +977 1 4412345 / +977 9801234567
+                </span>
               </div>
             </div>
 
             <div className="flex items-start gap-3">
               <Clock className="w-5 h-5 text-saffron-700 flex-shrink-0 mt-0.5" />
               <div>
-                <span className="font-bold block text-sacred-900">Support Hours</span>
-                <span className="text-muted-foreground">Sunday - Friday: 9:00 AM - 6:00 PM NPT</span>
+                <span className="font-bold block text-sacred-900">
+                  Support Hours
+                </span>
+                <span className="text-muted-foreground">
+                  Sunday - Friday: 9:00 AM - 6:00 PM NPT
+                </span>
               </div>
             </div>
           </div>
@@ -90,7 +119,9 @@ export default function ContactPage() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="font-bold text-sacred-900">Interested Mukhi / Query</label>
+              <label className="font-bold text-sacred-900">
+                Interested Mukhi / Query
+              </label>
               <input
                 type="text"
                 placeholder="e.g. Inquiring about 14 Mukhi certificate or custom silver capping"
@@ -108,7 +139,12 @@ export default function ContactPage() {
               />
             </div>
 
-            <Button type="button" variant="primary" size="lg" className="w-full gap-2">
+            <Button
+              type="button"
+              variant="primary"
+              size="lg"
+              className="w-full gap-2"
+            >
               <Send className="w-4 h-4" /> Submit Inquiry
             </Button>
           </form>

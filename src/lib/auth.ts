@@ -1,4 +1,5 @@
 import { NextAuthOptions } from "next-auth";
+import { getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import * as bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
@@ -24,50 +25,23 @@ export const authOptions: NextAuthOptions = {
 
         const emailLower = credentials.email.toLowerCase().trim();
 
-        // 1. Check database if connected
-        try {
-          const user = await prisma.user.findUnique({
-            where: { email: emailLower },
-          });
+        const user = await prisma.user.findUnique({
+          where: { email: emailLower },
+        });
 
-          if (user) {
-            const isMatch = await bcrypt.compare(credentials.password, user.password);
-            if (isMatch) {
-              return {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-              };
-            }
+        if (user) {
+          const isMatch = await bcrypt.compare(
+            credentials.password,
+            user.password,
+          );
+          if (isMatch) {
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+              role: user.role,
+            };
           }
-        } catch (error) {
-          console.warn("Database auth check failed, checking mock credentials:", error);
-        }
-
-        // 2. Demo fallback accounts for academic evaluation
-        if (
-          emailLower === "admin@rudrakart.com" &&
-          credentials.password === "Admin@12345"
-        ) {
-          return {
-            id: "admin-demo-id",
-            name: "RudraKart Administrator",
-            email: "admin@rudrakart.com",
-            role: "ADMIN",
-          };
-        }
-
-        if (
-          emailLower === "customer@rudrakart.com" &&
-          credentials.password === "Customer@12345"
-        ) {
-          return {
-            id: "customer-demo-id",
-            name: "Aarav Sharma",
-            email: "customer@rudrakart.com",
-            role: "CUSTOMER",
-          };
         }
 
         throw new Error("Invalid email or password.");
@@ -90,5 +64,10 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET || "rudrakart_development_secret_academic_2026",
+  secret: process.env.NEXTAUTH_SECRET,
 };
+
+export async function isAdmin() {
+  const session = await getServerSession(authOptions);
+  return (session?.user as any)?.role === "ADMIN";
+}

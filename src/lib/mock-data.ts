@@ -5,31 +5,36 @@ export const MOCK_CATEGORIES = [
     id: "cat-1",
     name: "1 to 14 Mukhi Rudraksha",
     slug: "1-14-mukhi-rudraksha",
-    description: "Authentic single beads directly harvested from eastern Himalayan foothills of Nepal (Sankhuwasabha & Dingla).",
+    description:
+      "Authentic single beads directly harvested from eastern Himalayan foothills of Nepal (Sankhuwasabha & Dingla).",
   },
   {
     id: "cat-2",
     name: "Rare & Sacred Combinations",
     slug: "rare-sacred-rudraksha",
-    description: "Naturally conjoined and uniquely formed sacred specimens like Gauri Shankar, Trijuti, and Ganesh Rudraksha.",
+    description:
+      "Naturally conjoined and uniquely formed sacred specimens like Gauri Shankar, Trijuti, and Ganesh Rudraksha.",
   },
   {
     id: "cat-3",
     name: "Rudraksha Malas & Rosaries",
     slug: "rudraksha-malas",
-    description: "Traditional 108+1 japa rosaries and designer malas strung with natural silk and pure silver wire.",
+    description:
+      "Traditional 108+1 japa rosaries and designer malas strung with natural silk and pure silver wire.",
   },
   {
     id: "cat-4",
     name: "Rudraksha Bracelets",
     slug: "rudraksha-bracelets",
-    description: "Ergonomic wristbands crafted from hand-selected authentic Nepali beads with adjustable clasps.",
+    description:
+      "Ergonomic wristbands crafted from hand-selected authentic Nepali beads with adjustable clasps.",
   },
   {
     id: "cat-5",
     name: "Silver Caps & Puja Accessories",
     slug: "puja-accessories",
-    description: "Pure 925 sterling silver cappings, traditional teakwood storage boxes, and consecration essentials.",
+    description:
+      "Pure 925 sterling silver cappings, traditional teakwood storage boxes, and consecration essentials.",
   },
 ];
 
@@ -44,8 +49,10 @@ export const MOCK_CERTIFICATES: CertificateItem[] = [
     weightGrams: 4.12,
     inspectionDate: new Date("2026-01-15"),
     laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
-    xrayStatus: "Single central seed chamber verified; no artificial embedding detected",
-    microscopicCheck: "Complete natural uninterrupted Mukhi line; authentic thorny cellular ridges",
+    xrayStatus:
+      "Single central seed chamber verified; no artificial embedding detected",
+    microscopicCheck:
+      "Complete natural uninterrupted Mukhi line; authentic thorny cellular ridges",
     verificationStatus: "VERIFIED",
   },
   {
@@ -55,11 +62,12 @@ export const MOCK_CERTIFICATES: CertificateItem[] = [
     mukhi: 2,
     origin: "Nepal (Sankhuwasabha)",
     dimensions: "21.0 x 14.5 mm",
-    weightGrams: 3.20,
+    weightGrams: 3.2,
     inspectionDate: new Date("2026-02-10"),
     laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
     xrayStatus: "Two distinct internal seed compartments observed",
-    microscopicCheck: "Natural twin cleft lines intact; density standard 1.18 g/cm3",
+    microscopicCheck:
+      "Natural twin cleft lines intact; density standard 1.18 g/cm3",
     verificationStatus: "VERIFIED",
   },
   {
@@ -69,11 +77,12 @@ export const MOCK_CERTIFICATES: CertificateItem[] = [
     mukhi: 5,
     origin: "Nepal (Dingla)",
     dimensions: "22.0 x 21.8 mm",
-    weightGrams: 3.80,
+    weightGrams: 3.8,
     inspectionDate: new Date("2026-03-01"),
     laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
     xrayStatus: "Five natural radial seed cavities confirmed",
-    microscopicCheck: "Standard natural Elaeocarpus ganitrus endocarp structure",
+    microscopicCheck:
+      "Standard natural Elaeocarpus ganitrus endocarp structure",
     verificationStatus: "VERIFIED",
   },
   {
@@ -87,7 +96,8 @@ export const MOCK_CERTIFICATES: CertificateItem[] = [
     inspectionDate: new Date("2026-03-12"),
     laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
     xrayStatus: "Seven symmetrical internal seed cavities observed",
-    microscopicCheck: "Pristine natural ridges; unbleached chemical-free surface",
+    microscopicCheck:
+      "Pristine natural ridges; unbleached chemical-free surface",
     verificationStatus: "VERIFIED",
   },
   {
@@ -97,11 +107,13 @@ export const MOCK_CERTIFICATES: CertificateItem[] = [
     mukhi: 14,
     origin: "Nepal (Sankhuwasabha)",
     dimensions: "26.5 x 26.1 mm",
-    weightGrams: 5.20,
+    weightGrams: 5.2,
     inspectionDate: new Date("2026-03-18"),
     laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
-    xrayStatus: "14 distinct internal seed cavities completely verified under digital radiograph",
-    microscopicCheck: "Natural woody partitions; genuine uninterrupted spines with zero carving",
+    xrayStatus:
+      "14 distinct internal seed cavities completely verified under digital radiograph",
+    microscopicCheck:
+      "Natural woody partitions; genuine uninterrupted spines with zero carving",
     verificationStatus: "VERIFIED",
   },
   {
@@ -111,11 +123,13 @@ export const MOCK_CERTIFICATES: CertificateItem[] = [
     mukhi: 10,
     origin: "Nepal (Sankhuwasabha)",
     dimensions: "28.0 x 21.4 mm",
-    weightGrams: 6.10,
+    weightGrams: 6.1,
     inspectionDate: new Date("2026-03-20"),
     laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
-    xrayStatus: "Continuous botanical fusion observed; no glue or synthetic bonding material",
-    microscopicCheck: "Natural organic joint with continuous woody fiber network",
+    xrayStatus:
+      "Continuous botanical fusion observed; no glue or synthetic bonding material",
+    microscopicCheck:
+      "Natural organic joint with continuous woody fiber network",
     verificationStatus: "VERIFIED",
   },
 ];
@@ -123,9 +137,10 @@ export const MOCK_CERTIFICATES: CertificateItem[] = [
 export const MOCK_PRODUCTS: ProductItem[] = [
   {
     id: "prod-1",
-    name: "1 Mukhi Savar Rudraksha (Nepal)",
+    name: "1 Mukhi Chandrakar Rudraksha",
     slug: "1-mukhi-rudraksha-nepal",
-    description: "The rarest and most revered single-mukhi formation found in nature. This Nepali Savar bead naturally grows conjoined with a supporting base bead, displaying a single undivided natural groove running from head to tail. Verified via X-ray imaging showing complete natural internal chamber formation.",
+    description:
+      "Academic sample listing for a 1 Mukhi Chandrakar Rudraksha. Product identity and physical characteristics have not been independently verified.",
     price: 145000,
     mukhi: 1,
     isSpecial: true,
@@ -141,8 +156,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     images: [
       {
         id: "img-1",
-        url: "/images/products/1-mukhi-savar-rudraksha.jpg",
-        altText: "Authentic 1 Mukhi Savar Rudraksha from Sankhuwasabha Nepal showing natural single ridge and Savar formation",
+        url: "/images/products/1-mukhi-chandrakar-rudraksha.jpg",
+        altText: "1 Mukhi Chandrakar Rudraksha product photograph",
         isPrimary: true,
         sortOrder: 0,
       },
@@ -153,7 +168,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-2",
     name: "2 Mukhi Dwi Mukhi Rudraksha (Nepal)",
     slug: "2-mukhi-rudraksha-nepal",
-    description: "Authentic two-faced Nepali Rudraksha representing the sacred Ardhanarishvara union. Features two clearly defined natural clefts traversing symmetrically across the bead with deep, prominent ridges.",
+    description:
+      "Authentic two-faced Nepali Rudraksha representing the sacred Ardhanarishvara union. Features two clearly defined natural clefts traversing symmetrically across the bead with deep, prominent ridges.",
     price: 9500,
     mukhi: 2,
     isSpecial: false,
@@ -181,7 +197,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-3",
     name: "3 Mukhi Agni Rudraksha (Nepal)",
     slug: "3-mukhi-rudraksha-nepal",
-    description: "Authentic three-mukhi bead from Dingla region of eastern Nepal. Features three distinct equidistant natural ridges, symbolizing pure vitality and energy.",
+    description:
+      "Authentic three-mukhi bead from Dingla region of eastern Nepal. Features three distinct equidistant natural ridges, symbolizing pure vitality and energy.",
     price: 4500,
     mukhi: 3,
     isSpecial: false,
@@ -208,7 +225,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-4",
     name: "4 Mukhi Brahma Rudraksha (Nepal)",
     slug: "4-mukhi-rudraksha-nepal",
-    description: "Natural 4-faced bead harvested from high-altitude groves in eastern Nepal. Four clean, deeply grooved lines run from pole to pole without artificial carving.",
+    description:
+      "Natural 4-faced bead harvested from high-altitude groves in eastern Nepal. Four clean, deeply grooved lines run from pole to pole without artificial carving.",
     price: 3500,
     mukhi: 4,
     isSpecial: false,
@@ -235,7 +253,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-5",
     name: "5 Mukhi Collector Grade Rudraksha (Nepal)",
     slug: "5-mukhi-rudraksha-nepal",
-    description: "Premium large-sized (22mm+) 5 Mukhi bead representing Lord Shiva (Kalagni Rudra). Selected from prime crop harvest with flawless symmetry, deep natural facets, and dense woody texture.",
+    description:
+      "Premium large-sized (22mm+) 5 Mukhi bead representing Lord Shiva (Kalagni Rudra). Selected from prime crop harvest with flawless symmetry, deep natural facets, and dense woody texture.",
     price: 1800,
     mukhi: 5,
     isSpecial: false,
@@ -263,7 +282,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-6",
     name: "6 Mukhi Kartikeya Rudraksha (Nepal)",
     slug: "6-mukhi-rudraksha-nepal",
-    description: "Six-faced authentic Nepali Rudraksha representing Lord Kartikeya. Known for high botanical density, sharp thorny ridges, and symmetrical line distribution.",
+    description:
+      "Six-faced authentic Nepali Rudraksha representing Lord Kartikeya. Known for high botanical density, sharp thorny ridges, and symmetrical line distribution.",
     price: 4200,
     mukhi: 6,
     isSpecial: false,
@@ -290,7 +310,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-7",
     name: "7 Mukhi Mahalakshmi Rudraksha (Nepal)",
     slug: "7-mukhi-rudraksha-nepal",
-    description: "Auspicious 7-faced Nepali Rudraksha representing Goddess Mahalakshmi. Highly prized for its distinct deep golden-brown luster and clearly articulated seven facets.",
+    description:
+      "Auspicious 7-faced Nepali Rudraksha representing Goddess Mahalakshmi. Highly prized for its distinct deep golden-brown luster and clearly articulated seven facets.",
     price: 12000,
     mukhi: 7,
     isSpecial: false,
@@ -318,7 +339,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-8",
     name: "8 Mukhi Ashta-Murti Ganesh Rudraksha (Nepal)",
     slug: "8-mukhi-rudraksha-nepal",
-    description: "Natural eight-mukhi Rudraksha associated with Lord Ganesha. Premium high-altitude specimen featuring deep contours and exceptional durability.",
+    description:
+      "Natural eight-mukhi Rudraksha associated with Lord Ganesha. Premium high-altitude specimen featuring deep contours and exceptional durability.",
     price: 18500,
     mukhi: 8,
     isSpecial: false,
@@ -345,7 +367,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-9",
     name: "9 Mukhi Navadurga Rudraksha (Nepal)",
     slug: "9-mukhi-rudraksha-nepal",
-    description: "Sacred 9-mukhi Nepali Rudraksha representing the nine forms of Goddess Durga (Navashakti). Large, well-balanced bead with 9 prominent natural lines.",
+    description:
+      "Sacred 9-mukhi Nepali Rudraksha representing the nine forms of Goddess Durga (Navashakti). Large, well-balanced bead with 9 prominent natural lines.",
     price: 26000,
     mukhi: 9,
     isSpecial: false,
@@ -372,7 +395,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-10",
     name: "10 Mukhi Dashamukhi Rudraksha (Nepal)",
     slug: "10-mukhi-rudraksha-nepal",
-    description: "Ten-faced Nepali Rudraksha representing Lord Mahavishnu and the ten directions (Digpalas). Excellent spherical formation with ten distinct facets.",
+    description:
+      "Ten-faced Nepali Rudraksha representing Lord Mahavishnu and the ten directions (Digpalas). Excellent spherical formation with ten distinct facets.",
     price: 34000,
     mukhi: 10,
     isSpecial: false,
@@ -399,7 +423,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-14",
     name: "14 Mukhi Devamani Rudraksha (Nepal)",
     slug: "14-mukhi-rudraksha-nepal",
-    description: "Among the rarest and most treasured of all higher Mukhis. Known as the Devamani (Gem of the Gods) and associated with Lord Hanuman and Lord Shiva. Large collector size with 14 natural lines traversing the entire sphere.",
+    description:
+      "Among the rarest and most treasured of all higher Mukhis. Known as the Devamani (Gem of the Gods) and associated with Lord Hanuman and Lord Shiva. Large collector size with 14 natural lines traversing the entire sphere.",
     price: 210000,
     mukhi: 14,
     isSpecial: true,
@@ -427,7 +452,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-15",
     name: "Gauri Shankar Sacred Conjoined Rudraksha",
     slug: "gauri-shankar-rudraksha-nepal",
-    description: "Naturally united twin Rudraksha beads conjoined on the tree without human intervention. Symbolizes the divine union of Lord Shiva and Goddess Parvati. Outstanding natural bond strength and symmetrical beauty.",
+    description:
+      "Naturally united twin Rudraksha beads conjoined on the tree without human intervention. Symbolizes the divine union of Lord Shiva and Goddess Parvati. Outstanding natural bond strength and symmetrical beauty.",
     price: 55000,
     mukhi: null,
     isSpecial: true,
@@ -455,7 +481,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-16",
     name: "Natural Ganesh Rudraksha with Trunk Formation",
     slug: "ganesh-rudraksha-nepal",
-    description: "A rare biological wonder where an organic trunk-like protrusion naturally extends from the body of the bead. Revered as an auspicious representation of Lord Ganesha.",
+    description:
+      "A rare biological wonder where an organic trunk-like protrusion naturally extends from the body of the bead. Revered as an auspicious representation of Lord Ganesha.",
     price: 22000,
     mukhi: null,
     isSpecial: true,
@@ -482,7 +509,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-17",
     name: "108+1 Beads 5-Mukhi Nepali Japa Mala (8mm)",
     slug: "108-beads-5-mukhi-nepali-japa-mala",
-    description: "Hand-crafted 108+1 sacred rosary strung with calibrated 8mm natural Nepali five-mukhi beads. Features traditional knotting between each bead and a vibrant saffron tassel.",
+    description:
+      "Hand-crafted 108+1 sacred rosary strung with calibrated 8mm natural Nepali five-mukhi beads. Features traditional knotting between each bead and a vibrant saffron tassel.",
     price: 6500,
     mukhi: 5,
     isSpecial: false,
@@ -509,7 +537,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-18",
     name: "Pure 925 Silver Capped 5-Mukhi Rudraksha Bracelet",
     slug: "silver-capped-5-mukhi-bracelet",
-    description: "Elegant wrist bracelet crafted with selected 12mm Nepali five-mukhi Rudraksha beads encased in handcrafted 925 sterling silver caps with a secure lobster clasp.",
+    description:
+      "Elegant wrist bracelet crafted with selected 12mm Nepali five-mukhi Rudraksha beads encased in handcrafted 925 sterling silver caps with a secure lobster clasp.",
     price: 4800,
     mukhi: 5,
     isSpecial: false,
@@ -536,7 +565,8 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     id: "prod-19",
     name: "Carved Teakwood Velvet-Lined Rudraksha Storage Box",
     slug: "carved-teakwood-rudraksha-box",
-    description: "Traditional Himalayan artisan-carved solid teakwood box with rich saffron velvet interior. Designed specifically to protect and energize sacred beads.",
+    description:
+      "Traditional Himalayan artisan-carved solid teakwood box with rich saffron velvet interior. Designed specifically to protect and energize sacred beads.",
     price: 2200,
     mukhi: null,
     isSpecial: false,

@@ -1,7 +1,14 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
+import { SignOutButton } from "@/components/auth/SignOutButton";
+
+export const metadata: Metadata = {
+  title: "Administration",
+  robots: { index: false, follow: false },
+};
 import {
   LayoutDashboard,
   Package,
@@ -25,8 +32,16 @@ export default async function AdminLayout({
   const adminNav = [
     { label: "Dashboard Overview", href: "/admin", icon: LayoutDashboard },
     { label: "Products & Stock", href: "/admin/products", icon: Package },
-    { label: "Orders & Fulfillment", href: "/admin/orders", icon: ShoppingCart },
-    { label: "Transaction Security", href: "/admin/security/transactions", icon: ShieldCheck },
+    {
+      label: "Orders & Fulfillment",
+      href: "/admin/orders",
+      icon: ShoppingCart,
+    },
+    {
+      label: "Transaction Security",
+      href: "/admin/security/transactions",
+      icon: ShieldCheck,
+    },
   ];
 
   return (
@@ -71,13 +86,11 @@ export default async function AdminLayout({
         <div className="pt-4 border-t border-sacred-800 space-y-3 text-xs">
           <div className="flex items-center gap-2 px-2 text-sacred-400">
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span>Admin: admin@rudrakart.com</span>
+            <span>Admin: {session.user.email}</span>
           </div>
 
           <div className="flex items-center justify-end px-2 text-[11px]">
-            <Link href="/login" className="text-red-400 hover:underline">
-              Sign Out
-            </Link>
+            <SignOutButton className="text-red-400 hover:underline" />
           </div>
         </div>
       </aside>
@@ -94,7 +107,6 @@ export default async function AdminLayout({
               Role: System Administrator
             </span>
           </div>
-
         </header>
 
         <main className="flex-1 p-6 sm:p-8 overflow-y-auto">{children}</main>

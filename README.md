@@ -1,76 +1,81 @@
-# RudraKart — Specialized Authentic Rudraksha E-Commerce Platform
+# RudraKart — Rudraksha and Puja E-Commerce Demo
 
 **BSc CSIT 6th Semester E-Commerce Project**  
-*Technology Stack:* Next.js 14+ (App Router), TypeScript, Tailwind CSS, shadcn/ui, Prisma ORM, PostgreSQL (Neon Free Tier), Auth.js.
+_Technology Stack:_ Next.js 14+ (App Router), TypeScript, Tailwind CSS, shadcn/ui, Prisma ORM, PostgreSQL (Neon Free Tier), Auth.js.
 
 ---
 
 ## 🌟 Key Features & Business USPs
 
-1. **Authenticity & Scientific Transparency:**
-   - Detailed Mukhi facets, physical dimensions, exact gram weight, and origin tracking (Sankhuwasabha / Dingla, Nepal).
-   - Digital non-destructive **X-Ray Radiograph** and **Microscopic Ridge Analysis** records.
-   - Public Certificate Verification tool (`/certificate-verification`) using serialized IDs (e.g. `RK-DEMO-00001`).
+1. **Product Catalog:**
+   - Rudraksha beads, malas, and puja products with stock, category, and detail fields.
+   - Certificate reference lookup at `/certificate-verification`; `RK-DEMO-*` entries are academic sample data, not independent certifications.
 
 2. **Clean SEO-Optimized Catalog & Routing:**
    - Multi-facet filters (Mukhi 1–14, Category, Origin, Price, Sort).
    - Clean SEO URLs (e.g., `/rudraksha/5-mukhi`, `/rudraksha/7-mukhi`, `/rudraksha/gauri-shankar`).
    - Dynamic `sitemap.xml` and `robots.txt`.
 
-3. **Dual Currency & Markets:**
-   - Seamless one-click switch between **NPR (Rs.)** and **USD ($)** across all catalog pages.
+3. **Currency Display:**
+   - Switch between **NPR (Rs.)** and **USD ($)** for storefront price display. Orders are recorded in NPR.
 
-4. **Multi-Gateway Payment Simulators:**
-   - 🇳🇵 **eSewa Mobile Wallet** sandbox simulator with authentic UI.
-   - 🇳🇵 **Khalti Digital Wallet** sandbox simulator.
-   - 💳 **International Card (Stripe-style)** simulator.
-   - 💵 **Cash on Delivery (COD)**.
+4. **Checkout:**
+   - Cash on Delivery is available. Online payment is unavailable until a real payment gateway is configured.
 
 5. **Rule-Based Recommendation Engine:**
    - Suggests matching Mukhi creations (e.g. 5 Mukhi Mala with 5 Mukhi Bead), complementary silver caps/storage boxes, and similar price tier beads.
 
 6. **Comprehensive Admin Portal (`/admin`):**
-   - Executive Dashboard with metrics (Revenue, Pending Orders, Low Stock Alerts).
+   - Dashboard statistics, pending orders, and low-stock alerts from available database records.
    - Products & Specimens CRUD with stock level indicators.
    - Order fulfillment & status updater (`PENDING` $\rightarrow$ `PROCESSING` $\rightarrow$ `SHIPPED` $\rightarrow$ `DELIVERED`).
-   - Certificate registry & issuance log.
-   - Real-time Inventory Controller.
+   - Read-only academic sample certificate records; issuance is not implemented.
+   - Inventory is updated when orders are placed and can be managed by an administrator.
 
 ---
 
 ## 🚀 Quick Start Guide
 
 ### 1. Install Dependencies
+
 ```bash
 npm install
 ```
 
 ### 2. Configure Environment Variables
+
 Copy `.env.example` to `.env`:
+
 ```env
 DATABASE_URL="postgresql://neondb_owner:password@ep-sample-123456.us-east-2.aws.neon.tech/rudrakart?sslmode=require"
-NEXTAUTH_SECRET="rudrakart_development_jwt_secret_academic_key_2026"
+NEXTAUTH_SECRET="replace-with-a-random-secret"
 NEXTAUTH_URL="http://localhost:3000"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 NEXT_PUBLIC_CURRENCY_DEFAULT="NPR"
 NEXT_PUBLIC_USD_RATE="135.0"
 ```
 
-### 3. Database Migration & Realistic Seeding
+### 3. Database Setup & Sample Seeding
+
 When connected to PostgreSQL (Neon Free Tier or local):
-```bash
+
+```powershell
 # Push schema to database
 npx prisma db push
 
-# Seed 20+ authentic Nepali specimens, categories, certificates, and demo accounts
-npm run seed
+# Requires a disposable database, a private admin password of at least 12 characters,
+# and explicitly opts into deleting existing RudraKart records.
+$env:ADMIN_SEED_PASSWORD="use-a-private-password"; $env:ALLOW_DESTRUCTIVE_SEED="true"; npm run seed; Remove-Item Env:ADMIN_SEED_PASSWORD,Env:ALLOW_DESTRUCTIVE_SEED
 ```
-*(Note: The system also includes an automated fallback layer so all pages, catalog filters, and certificates work even if the database is offline).*
+
+The fallback catalog and certificate records are illustrative sample data. Order creation requires a working database.
 
 ### 4. Start Development Server
+
 ```bash
 npm run dev
 ```
+
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### Local HTTPS / TLS Demonstration
@@ -102,20 +107,12 @@ HTTPS is HTTP transported over TLS. It encrypts data in transit, authenticates t
 
 ---
 
-## 👥 Demo Test Accounts
-
-On the `/login` page, you can use the **1-Click Fast-Fill buttons** or enter:
-
-| Role | Email | Password |
-| :--- | :--- | :--- |
-| **Administrator** | `admin@rudrakart.com` | `Admin@12345` |
-| **Customer** | `customer@rudrakart.com` | `Customer@12345` |
-
----
+Create customer accounts through `/register`. The seeded admin email is `admin@rudrakart.com`; the password is supplied privately through `ADMIN_SEED_PASSWORD` during the guarded seed.
 
 ## 🧪 Sample Demo Certificate IDs to Test
 
 Visit `/certificate-verification` and try:
+
 - `RK-DEMO-00001` (1 Mukhi Savar Rudraksha - Sankhuwasabha)
 - `RK-DEMO-00002` (2 Mukhi Dwi Mukhi Rudraksha)
 - `RK-DEMO-00005` (5 Mukhi Collector Grade Rudraksha)

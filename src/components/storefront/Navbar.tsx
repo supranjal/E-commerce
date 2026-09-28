@@ -38,8 +38,12 @@ export function Navbar() {
     { label: "1–14 Mukhi", href: "/category/1-14-mukhi-rudraksha" },
     { label: "Rare & Sacred", href: "/category/rare-sacred-rudraksha" },
     { label: "Malas & Bracelets", href: "/category/rudraksha-malas" },
-    { label: "Verify Certificate", href: "/certificate-verification", highlight: true },
-    { label: "Authenticity & Lab", href: "/authenticity" },
+    {
+      label: "Verify Certificate",
+      href: "/certificate-verification",
+      highlight: true,
+    },
+    { label: "Identification Guide", href: "/authenticity" },
     { label: "About", href: "/about" },
   ];
 
@@ -49,7 +53,7 @@ export function Navbar() {
       <div className="bg-sacred-900 text-sacred-100 text-[11px] py-1 px-4 sm:px-8 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>Himalayan Origin Guaranteed • Non-Destructive X-Ray Tested</span>
+          <span>Academic E-Commerce Demonstration</span>
         </div>
         <div className="flex items-center gap-4">
           <button
@@ -57,7 +61,8 @@ export function Navbar() {
             className="flex items-center gap-1 hover:text-gold-300 transition-colors font-mono font-medium"
           >
             <Globe className="w-3.5 h-3.5" />
-            Currency: <span className="font-bold text-gold-400">{currency}</span>
+            Currency:{" "}
+            <span className="font-bold text-gold-400">{currency}</span>
           </button>
         </div>
       </div>
@@ -74,8 +79,8 @@ export function Navbar() {
               <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-sacred-950">
                 Rudra<span className="text-saffron-700">Kart</span>
               </span>
-              <span className="text-[9px] tracking-widest uppercase font-semibold text-sacred-600 -mt-1">
-                Authentic & Certified
+              <span className="hidden sm:block text-[9px] tracking-widest uppercase font-semibold text-sacred-600 -mt-1">
+                Rudraksha & Puja Products
               </span>
             </div>
           </Link>
@@ -92,7 +97,9 @@ export function Navbar() {
                     : "text-sacred-800"
                 }`}
               >
-                {link.highlight && <Award className="w-3.5 h-3.5 text-gold-700" />}
+                {link.highlight && (
+                  <Award className="w-3.5 h-3.5 text-gold-700" />
+                )}
                 {link.label}
               </Link>
             ))}
@@ -103,7 +110,7 @@ export function Navbar() {
             {/* Search Trigger */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="p-2 rounded-full text-sacred-800 hover:text-saffron-800 hover:bg-sacred-100 transition-colors"
+              className="hidden sm:block p-2 rounded-full text-sacred-800 hover:text-saffron-800 hover:bg-sacred-100 transition-colors"
               aria-label="Search Catalog"
             >
               <Search className="w-5 h-5" />
@@ -112,8 +119,10 @@ export function Navbar() {
             {/* User Account */}
             <Link
               href={isSignedIn ? "/account" : "/login"}
-              className="p-2 rounded-full text-sacred-800 hover:text-saffron-800 hover:bg-sacred-100 transition-colors"
-              aria-label={isSignedIn ? "Open your account" : "Sign in to your account"}
+              className="hidden sm:block p-2 rounded-full text-sacred-800 hover:text-saffron-800 hover:bg-sacred-100 transition-colors"
+              aria-label={
+                isSignedIn ? "Open your account" : "Sign in to your account"
+              }
             >
               <User className="w-5 h-5" />
             </Link>
@@ -127,7 +136,11 @@ export function Navbar() {
               className="lg:hidden p-2 rounded-lg text-sacred-800 hover:bg-sacred-100"
               aria-label="Toggle Mobile Menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
@@ -140,7 +153,7 @@ export function Navbar() {
                 e.preventDefault();
                 if (searchQuery.trim()) {
                   window.location.href = `/products?search=${encodeURIComponent(
-                    searchQuery
+                    searchQuery,
                   )}`;
                 }
               }}
@@ -188,13 +201,6 @@ export function Navbar() {
               Switch Currency ({currency})
             </button>
             <div className="flex items-center gap-3">
-              <Link
-                href="/account/wallet"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-sm font-semibold text-sacred-800"
-              >
-                Wallet
-              </Link>
               <Link
                 href={isSignedIn ? "/account" : "/login"}
                 onClick={() => setMobileMenuOpen(false)}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Award, ShieldCheck, CheckCircle2, Search, ExternalLink, Plus } from "lucide-react";
+import { Award, ShieldCheck, ExternalLink } from "lucide-react";
 import { MOCK_CERTIFICATES, MOCK_PRODUCTS } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 
@@ -12,13 +12,10 @@ export default function AdminCertificatesPage() {
             Certificate & Laboratory Registry
           </h1>
           <p className="text-xs text-muted-foreground">
-            Manage authenticated X-ray radiograph serials and public verification records.
+            Read-only sample records for the academic demo. Certificate issuance
+            is not implemented.
           </p>
         </div>
-
-        <Button variant="primary" size="sm" className="gap-1.5 self-start sm:self-auto">
-          <Plus className="w-4 h-4" /> Issue New Certificate
-        </Button>
       </div>
 
       <div className="bg-white rounded-2xl border border-sacred-200 shadow-xs overflow-hidden">
@@ -41,7 +38,10 @@ export default function AdminCertificatesPage() {
                 const prod = MOCK_PRODUCTS.find((p) => p.id === cert.productId);
 
                 return (
-                  <tr key={cert.id} className="hover:bg-sacred-50/50 transition-colors">
+                  <tr
+                    key={cert.id}
+                    className="hover:bg-sacred-50/50 transition-colors"
+                  >
                     <td className="p-4 font-mono font-bold text-saffron-800">
                       {cert.certificateNumber}
                     </td>
@@ -49,8 +49,12 @@ export default function AdminCertificatesPage() {
                       {prod?.name || "Nepali Rudraksha"}
                     </td>
                     <td className="p-4">
-                      <span className="font-semibold block">{cert.mukhi} Mukhi</span>
-                      <span className="text-[11px] text-muted-foreground">{cert.origin}</span>
+                      <span className="font-semibold block">
+                        {cert.mukhi} Mukhi
+                      </span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {cert.origin}
+                      </span>
                     </td>
                     <td className="p-4">
                       <span>{cert.dimensions}</span>
@@ -65,13 +69,17 @@ export default function AdminCertificatesPage() {
                       {new Date(cert.inspectionDate).toLocaleDateString()}
                     </td>
                     <td className="p-4">
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded font-bold text-[10px] bg-emerald-100 text-emerald-800">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                        {cert.verificationStatus}
+                      <span className="inline-flex items-center px-2 py-0.5 rounded font-bold text-[10px] bg-amber-100 text-amber-800">
+                        SAMPLE_DEMO
                       </span>
                     </td>
                     <td className="p-4 text-right">
-                      <Button variant="ghost" size="sm" className="h-8 px-2" asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 px-2"
+                        asChild
+                      >
                         <Link
                           href={`/certificate-verification?id=${cert.certificateNumber}`}
                           target="_blank"

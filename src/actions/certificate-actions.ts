@@ -4,9 +4,7 @@ import prisma from "@/lib/prisma";
 import { MOCK_CERTIFICATES, MOCK_PRODUCTS } from "@/lib/mock-data";
 import { CertificateItem } from "@/types";
 
-export async function verifyCertificate(
-  certificateNumber: string
-): Promise<{
+export async function verifyCertificate(certificateNumber: string): Promise<{
   success: boolean;
   certificate?: CertificateItem;
   productName?: string;
@@ -16,7 +14,10 @@ export async function verifyCertificate(
   const trimmed = certificateNumber.trim().toUpperCase();
 
   if (!trimmed) {
-    return { success: false, error: "Please enter a valid certificate number." };
+    return {
+      success: false,
+      error: "Please enter a valid certificate number.",
+    };
   }
 
   try {
@@ -26,9 +27,17 @@ export async function verifyCertificate(
     });
 
     if (cert) {
+      const isSample =
+        cert.certificateNumber.startsWith("RK-DEMO-") ||
+        cert.laboratory.toLowerCase().includes("demo");
       return {
         success: true,
-        certificate: cert as unknown as CertificateItem,
+        certificate: {
+          ...(cert as unknown as CertificateItem),
+          verificationStatus: isSample
+            ? "SAMPLE_DEMO"
+            : cert.verificationStatus,
+        },
         productName: cert.product.name,
         productSlug: cert.product.slug,
       };
@@ -39,14 +48,16 @@ export async function verifyCertificate(
 
   // Check fallback mock certificates
   const mockCert = MOCK_CERTIFICATES.find(
-    (c) => c.certificateNumber.toUpperCase() === trimmed
+    (c) => c.certificateNumber.toUpperCase() === trimmed,
   );
 
   if (mockCert) {
-    const relatedProduct = MOCK_PRODUCTS.find((p) => p.id === mockCert.productId);
+    const relatedProduct = MOCK_PRODUCTS.find(
+      (p) => p.id === mockCert.productId,
+    );
     return {
       success: true,
-      certificate: mockCert,
+      certificate: { ...mockCert, verificationStatus: "SAMPLE_DEMO" },
       productName: relatedProduct?.name ?? "Certified Sacred Nepali Rudraksha",
       productSlug: relatedProduct?.slug ?? "1-mukhi-rudraksha-nepal",
     };
@@ -54,6 +65,6 @@ export async function verifyCertificate(
 
   return {
     success: false,
-    error: `Certificate ID "${trimmed}" was not found in the authentic registry. Please check the spelling or format (e.g. RK-DEMO-00001).`,
+    error: `Certificate ID "${trimmed}" was not found in the current registry. Please check the spelling or format (e.g. RK-DEMO-00001).`,
   };
 }

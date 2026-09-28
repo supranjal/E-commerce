@@ -3,7 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Sparkles, User, Lock, Mail, Phone, MapPin, ArrowRight, AlertCircle, CheckCircle } from "lucide-react";
+import {
+  Sparkles,
+  User,
+  Lock,
+  Mail,
+  Phone,
+  MapPin,
+  ArrowRight,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function RegisterPage() {
@@ -33,12 +43,24 @@ export default function RegisterPage() {
       const result = await response.json();
 
       if (!response.ok) {
-        setError(result.error || "Registration could not be completed. Please try again.");
+        setError(
+          result.error ||
+            "Registration could not be completed. Please try again.",
+        );
         return;
+      }
+
       setSuccess(true);
-      const target = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("callbackUrl") : null;
+      const target =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search).get("callbackUrl")
+          : null;
       setTimeout(() => {
-        router.push(target ? `/login?callbackUrl=${encodeURIComponent(target)}` : "/login");
+        router.push(
+          target
+            ? `/login?callbackUrl=${encodeURIComponent(target)}`
+            : "/login",
+        );
       }, 1500);
     } catch (err) {
       setError("Registration could not be completed. Please try again.");
@@ -64,7 +86,8 @@ export default function RegisterPage() {
             Create Customer Account
           </h2>
           <p className="text-xs text-muted-foreground">
-            Join RudraKart for verified certificate tracking and secure ordering.
+            Join RudraKart for verified certificate tracking and secure
+            ordering.
           </p>
         </div>
 
@@ -90,7 +113,9 @@ export default function RegisterPage() {
               <input
                 type="text"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 placeholder="e.g. Aarav Sharma"
                 className="w-full pl-9 pr-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-saffron-600 text-xs"
                 required
@@ -105,7 +130,9 @@ export default function RegisterPage() {
               <input
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
                 placeholder="aarav@example.com"
                 className="w-full pl-9 pr-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-saffron-600 text-xs"
                 required
@@ -119,8 +146,12 @@ export default function RegisterPage() {
               <Lock className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
               <input
                 type="password"
+                minLength={12}
+                maxLength={128}
                 value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
                 placeholder="••••••••"
                 className="w-full pl-9 pr-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-saffron-600 text-xs"
                 required
@@ -135,7 +166,9 @@ export default function RegisterPage() {
               <input
                 type="tel"
                 value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, phone: e.target.value })
+                }
                 placeholder="+977 98XXXXXXXX"
                 className="w-full pl-9 pr-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-saffron-600 text-xs"
                 required
@@ -144,13 +177,17 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-sacred-900">Delivery Address</label>
+            <label className="font-bold text-sacred-900">
+              Delivery Address
+            </label>
             <div className="relative">
               <MapPin className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
               <input
                 type="text"
                 value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, address: e.target.value })
+                }
                 placeholder="City, District, Nepal"
                 className="w-full pl-9 pr-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-saffron-600 text-xs"
                 required
@@ -165,13 +202,17 @@ export default function RegisterPage() {
             disabled={loading}
             className="w-full gap-2 shadow mt-2"
           >
-            {loading ? "Creating Account..." : "Create Account"} <ArrowRight className="w-4 h-4" />
+            {loading ? "Creating Account..." : "Create Account"}{" "}
+            <ArrowRight className="w-4 h-4" />
           </Button>
         </form>
 
         <div className="text-center text-xs text-muted-foreground pt-2">
           Already have an account?{" "}
-          <Link href="/login" className="font-bold text-saffron-700 hover:underline">
+          <Link
+            href="/login"
+            className="font-bold text-saffron-700 hover:underline"
+          >
             Sign In here
           </Link>
         </div>

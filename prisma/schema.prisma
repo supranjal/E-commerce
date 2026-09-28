@@ -129,7 +129,7 @@ model Certificate {
   xrayStatus         String?            @default("Clear natural internal seed chambers observed")
   microscopicCheck   String?            @default("Natural thorny ridges; no artificial carving, glue, or lines detected")
   certificateUrl     String?
-  verificationStatus VerificationStatus @default(VERIFIED)
+  verificationStatus VerificationStatus @default(PENDING_REVIEW)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

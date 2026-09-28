@@ -28,7 +28,9 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false);
   const [authChecking, setAuthChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("ESEWA");
+  const [paymentMethod, setPaymentMethod] =
+    useState<PaymentMethod>("CASH_ON_DELIVERY");
+  const [checkoutError, setCheckoutError] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -102,7 +104,9 @@ export default function CheckoutPage() {
               Sign In to Complete Your Order
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              An authenticated account is required to generate your encrypted order audit, verify serial certificates, and provide dispatch tracking.
+              An authenticated account is required to generate your encrypted
+              order audit, verify serial certificates, and provide dispatch
+              tracking.
             </p>
           </div>
 
@@ -111,7 +115,8 @@ export default function CheckoutPage() {
             <div className="space-y-1 text-xs">
               <span className="font-semibold text-emerald-800 flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                Your cart ({items.length} item{items.length > 1 ? "s" : ""}) is saved & ready:
+                Your cart ({items.length} item{items.length > 1 ? "s" : ""}) is
+                saved & ready:
               </span>
               <p className="text-sacred-800 font-serif font-bold text-sm">
                 Total: {formatPrice(subtotal, currency, usdRate)}
@@ -124,12 +129,22 @@ export default function CheckoutPage() {
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Button variant="primary" size="lg" className="w-full sm:w-auto gap-2" asChild>
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full sm:w-auto gap-2"
+              asChild
+            >
               <Link href="/login?callbackUrl=/checkout">
                 Sign In to Proceed <ArrowRight className="w-4 h-4" />
               </Link>
             </Button>
-            <Button variant="outline" size="lg" className="w-full sm:w-auto" asChild>
+            <Button
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto"
+              asChild
+            >
               <Link href="/register?callbackUrl=/checkout">
                 Create New Customer Account
               </Link>
@@ -143,6 +158,7 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setCheckoutError("");
 
     try {
       const orderPayload = {
@@ -165,19 +181,26 @@ export default function CheckoutPage() {
 
       const res = await createOrder(orderPayload);
 
+      if (!res.success) {
+        setCheckoutError(
+          res.error || "Order could not be placed. Please try again.",
+        );
+        return;
+      }
+
       if (res.success && res.orderNumber) {
         // Direct based on payment method
         if (paymentMethod === "ESEWA") {
           router.push(
-            `/checkout/payment/esewa?order=${res.orderNumber}&amount=${res.total}&currency=${currency}`
+            `/checkout/payment/esewa?order=${res.orderNumber}&amount=${res.total}&currency=${currency}`,
           );
         } else if (paymentMethod === "KHALTI") {
           router.push(
-            `/checkout/payment/khalti?order=${res.orderNumber}&amount=${res.total}&currency=${currency}`
+            `/checkout/payment/khalti?order=${res.orderNumber}&amount=${res.total}&currency=${currency}`,
           );
         } else if (paymentMethod === "CARD") {
           router.push(
-            `/checkout/payment/stripe?order=${res.orderNumber}&amount=${res.total}&currency=${currency}`
+            `/checkout/payment/stripe?order=${res.orderNumber}&amount=${res.total}&currency=${currency}`,
           );
         } else {
           // Cash on Delivery
@@ -186,7 +209,9 @@ export default function CheckoutPage() {
         }
       }
     } catch (error) {
-      alert("Checkout error. Please verify your details.");
+      setCheckoutError(
+        "Checkout could not be completed. Please verify your details and try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -203,7 +228,18 @@ export default function CheckoutPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start"
+      >
+        {checkoutError && (
+          <p
+            role="alert"
+            className="lg:col-span-12 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+          >
+            {checkoutError}
+          </p>
+        )}
         {/* Left Column: Shipping & Payment Method */}
         <div className="lg:col-span-7 space-y-8">
           {/* Shipping Address */}
@@ -215,55 +251,75 @@ export default function CheckoutPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div className="space-y-1">
-                <label className="font-bold text-sacred-900">Recipient Full Name</label>
+                <label className="font-bold text-sacred-900">
+                  Recipient Full Name
+                </label>
                 <input
                   type="text"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   className="w-full px-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600"
                   required
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-sacred-900">Email Address (for certificate & tracking)</label>
+                <label className="font-bold text-sacred-900">
+                  Email Address (for certificate & tracking)
+                </label>
                 <input
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="w-full px-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600"
                   required
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-sacred-900">Mobile Phone Number</label>
+                <label className="font-bold text-sacred-900">
+                  Mobile Phone Number
+                </label>
                 <input
                   type="tel"
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phone: e.target.value })
+                  }
                   className="w-full px-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600"
                   required
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-sacred-900">City / District</label>
+                <label className="font-bold text-sacred-900">
+                  City / District
+                </label>
                 <input
                   type="text"
                   value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, city: e.target.value })
+                  }
                   className="w-full px-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600"
                   required
                 />
               </div>
 
               <div className="sm:col-span-2 space-y-1">
-                <label className="font-bold text-sacred-900">Street Address / Landmark</label>
+                <label className="font-bold text-sacred-900">
+                  Street Address / Landmark
+                </label>
                 <input
                   type="text"
                   value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, address: e.target.value })
+                  }
                   className="w-full px-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600"
                   required
                 />
@@ -274,28 +330,38 @@ export default function CheckoutPage() {
                 <input
                   type="text"
                   value={formData.country}
-                  onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, country: e.target.value })
+                  }
                   className="w-full px-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600"
                   required
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-sacred-900">Postal / Zip Code</label>
+                <label className="font-bold text-sacred-900">
+                  Postal / Zip Code
+                </label>
                 <input
                   type="text"
                   value={formData.postalCode}
-                  onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, postalCode: e.target.value })
+                  }
                   className="w-full px-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600"
                 />
               </div>
 
               <div className="sm:col-span-2 space-y-1">
-                <label className="font-bold text-sacred-900">Special Delivery Instructions (Optional)</label>
+                <label className="font-bold text-sacred-900">
+                  Special Delivery Instructions (Optional)
+                </label>
                 <input
                   type="text"
                   value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, notes: e.target.value })
+                  }
                   placeholder="e.g. Please call recipient upon arrival"
                   className="w-full px-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600"
                 />
@@ -307,25 +373,23 @@ export default function CheckoutPage() {
           <div className="bg-white p-6 rounded-2xl border border-sacred-200 shadow-xs space-y-4">
             <h2 className="font-serif text-lg font-bold text-sacred-950 flex items-center gap-2">
               <CreditCard className="w-5 h-5 text-saffron-700" />
-              2. Select Payment Gateway
+              2. Select Payment Method
             </h2>
+            <p className="text-xs text-muted-foreground">
+              Only Cash on Delivery is available. Online payment gateways are
+              not connected.
+            </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               {/* eSewa */}
-              <label
-                className={`p-4 rounded-xl border-2 cursor-pointer flex items-center justify-between transition-all ${
-                  paymentMethod === "ESEWA"
-                    ? "border-emerald-600 bg-emerald-50/50 shadow-xs"
-                    : "border-sacred-200 bg-white hover:bg-sacred-50"
-                }`}
-              >
+              <label className="p-4 rounded-xl border-2 border-sacred-200 bg-sacred-50 flex items-center justify-between opacity-50 cursor-not-allowed">
                 <div className="flex items-center gap-3">
                   <input
                     type="radio"
                     name="payment"
                     value="ESEWA"
-                    checked={paymentMethod === "ESEWA"}
-                    onChange={() => setPaymentMethod("ESEWA")}
+                    checked={false}
+                    disabled
                     className="text-emerald-600 focus:ring-emerald-500"
                   />
                   <div>
@@ -333,7 +397,7 @@ export default function CheckoutPage() {
                       eSewa Mobile Wallet
                     </span>
                     <span className="text-[11px] text-muted-foreground">
-                      Demo Simulated Nepal Gateway
+                      Not configured
                     </span>
                   </div>
                 </div>
@@ -343,20 +407,14 @@ export default function CheckoutPage() {
               </label>
 
               {/* Khalti */}
-              <label
-                className={`p-4 rounded-xl border-2 cursor-pointer flex items-center justify-between transition-all ${
-                  paymentMethod === "KHALTI"
-                    ? "border-purple-600 bg-purple-50/50 shadow-xs"
-                    : "border-sacred-200 bg-white hover:bg-sacred-50"
-                }`}
-              >
+              <label className="p-4 rounded-xl border-2 border-sacred-200 bg-sacred-50 flex items-center justify-between opacity-50 cursor-not-allowed">
                 <div className="flex items-center gap-3">
                   <input
                     type="radio"
                     name="payment"
                     value="KHALTI"
-                    checked={paymentMethod === "KHALTI"}
-                    onChange={() => setPaymentMethod("KHALTI")}
+                    checked={false}
+                    disabled
                     className="text-purple-600 focus:ring-purple-500"
                   />
                   <div>
@@ -364,7 +422,7 @@ export default function CheckoutPage() {
                       Khalti Digital Wallet
                     </span>
                     <span className="text-[11px] text-muted-foreground">
-                      Demo Simulated Nepal Gateway
+                      Not configured
                     </span>
                   </div>
                 </div>
@@ -374,20 +432,14 @@ export default function CheckoutPage() {
               </label>
 
               {/* Stripe Card */}
-              <label
-                className={`p-4 rounded-xl border-2 cursor-pointer flex items-center justify-between transition-all ${
-                  paymentMethod === "CARD"
-                    ? "border-blue-600 bg-blue-50/50 shadow-xs"
-                    : "border-sacred-200 bg-white hover:bg-sacred-50"
-                }`}
-              >
+              <label className="p-4 rounded-xl border-2 border-sacred-200 bg-sacred-50 flex items-center justify-between opacity-50 cursor-not-allowed">
                 <div className="flex items-center gap-3">
                   <input
                     type="radio"
                     name="payment"
                     value="CARD"
-                    checked={paymentMethod === "CARD"}
-                    onChange={() => setPaymentMethod("CARD")}
+                    checked={false}
+                    disabled
                     className="text-blue-600 focus:ring-blue-500"
                   />
                   <div>
@@ -395,7 +447,7 @@ export default function CheckoutPage() {
                       International Card (Stripe-style)
                     </span>
                     <span className="text-[11px] text-muted-foreground">
-                      Visa, Mastercard, Amex (Sandbox)
+                      Not configured
                     </span>
                   </div>
                 </div>
@@ -436,7 +488,6 @@ export default function CheckoutPage() {
               </label>
             </div>
           </div>
-
         </div>
 
         {/* Right Column: Order Review */}
@@ -447,7 +498,10 @@ export default function CheckoutPage() {
 
           <div className="divide-y divide-sacred-100 max-h-64 overflow-y-auto space-y-3 pr-1">
             {items.map(({ product, quantity }) => (
-              <div key={product.id} className="pt-3 flex items-center gap-3 text-xs">
+              <div
+                key={product.id}
+                className="pt-3 flex items-center gap-3 text-xs"
+              >
                 <div className="relative w-12 h-12 rounded bg-sacred-100 flex-shrink-0 overflow-hidden">
                   <Image
                     src={getProductImageUrl(product)}
@@ -476,14 +530,6 @@ export default function CheckoutPage() {
                 {formatPrice(subtotal, currency, usdRate)}
               </span>
             </div>
-            <div className="flex justify-between text-muted-foreground">
-              <span>Express Insured Sourcing Delivery</span>
-              <span className="font-semibold text-emerald-700">FREE</span>
-            </div>
-            <div className="flex justify-between text-muted-foreground">
-              <span>Certificate Serial Verification</span>
-              <span className="font-semibold text-emerald-700">INCLUDED</span>
-            </div>
             <div className="pt-3 border-t border-sacred-200 flex justify-between items-baseline">
               <span className="font-serif text-base font-bold text-sacred-950">
                 Total Payable
@@ -501,7 +547,8 @@ export default function CheckoutPage() {
             disabled={loading}
             className="w-full gap-2 shadow-md text-base"
           >
-            {loading ? "Processing Order..." : `Proceed with ${paymentMethod}`} <ArrowRight className="w-4 h-4" />
+            {loading ? "Processing Order..." : `Proceed with ${paymentMethod}`}{" "}
+            <ArrowRight className="w-4 h-4" />
           </Button>
 
           <div className="text-[11px] text-muted-foreground flex items-center justify-center gap-1.5 pt-2">

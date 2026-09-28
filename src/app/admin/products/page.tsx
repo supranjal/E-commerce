@@ -1,13 +1,10 @@
-import { getProducts, getCategories } from "@/actions/product-actions";
+import { getAdminCatalog } from "@/actions/product-actions";
 import { ProductManagementClient } from "@/components/admin/ProductManagementClient";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminProductsPage() {
-  const [products, categories] = await Promise.all([
-    getProducts(),
-    getCategories(),
-  ]);
+  const { products, categories } = await getAdminCatalog();
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -18,7 +15,8 @@ export default async function AdminProductsPage() {
             Products & Specimens Management
           </h1>
           <p className="text-xs text-muted-foreground">
-            Create, update pricing and inventory, edit descriptions, or remove specimens from the active catalog.
+            Create, update pricing and inventory, edit descriptions, or remove
+            specimens from the active catalog.
           </p>
         </div>
       </div>
@@ -26,7 +24,11 @@ export default async function AdminProductsPage() {
       {/* Interactive Client Component */}
       <ProductManagementClient
         initialProducts={products}
-        categories={categories.map((c) => ({ id: c.id, name: c.name, slug: c.slug }))}
+        categories={categories.map((c) => ({
+          id: c.id,
+          name: c.name,
+          slug: c.slug,
+        }))}
       />
     </div>
   );

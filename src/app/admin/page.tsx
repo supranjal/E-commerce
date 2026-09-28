@@ -10,7 +10,7 @@ import {
   Clock,
 } from "lucide-react";
 import prisma from "@/lib/prisma";
-import { getProducts } from "@/actions/product-actions";
+import { getAdminCatalog } from "@/actions/product-actions";
 import { formatPrice } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboardOverview() {
-  const products = await getProducts();
+  const { products } = await getAdminCatalog();
   const lowStock = products.filter((p) => p.stock <= 3);
   const certifiedCount = products.filter((p) => p.isCertified).length;
 
@@ -81,7 +81,8 @@ export default async function AdminDashboardOverview() {
           Executive Operations Overview
         </h1>
         <p className="text-xs text-muted-foreground">
-          Real-time metrics for RudraKart catalog inventory, active customer orders, and transaction audit trails.
+          Real-time metrics for RudraKart catalog inventory, active customer
+          orders, and transaction audit trails.
         </p>
       </div>
 
@@ -165,7 +166,8 @@ export default async function AdminDashboardOverview() {
 
             {recentOrders.length === 0 && (
               <p className="text-xs text-muted-foreground text-center py-6">
-                No orders recorded in database yet. New checkout orders will appear here automatically.
+                No orders recorded in database yet. New checkout orders will
+                appear here automatically.
               </p>
             )}
           </div>
@@ -197,7 +199,8 @@ export default async function AdminDashboardOverview() {
                     {prod.name}
                   </span>
                   <span className="text-muted-foreground text-[11px]">
-                    Origin: {prod.origin} • Price: Rs. {prod.price.toLocaleString()}
+                    Origin: {prod.origin} • Price: Rs.{" "}
+                    {prod.price.toLocaleString()}
                   </span>
                 </div>
                 <span className="px-2.5 py-1 rounded font-bold bg-amber-100 text-amber-800 text-[11px]">
@@ -208,7 +211,8 @@ export default async function AdminDashboardOverview() {
 
             {lowStock.length === 0 && (
               <p className="text-xs text-muted-foreground text-center py-6">
-                All catalog specimens have healthy inventory levels (&gt; 3 units).
+                All catalog specimens have healthy inventory levels (&gt; 3
+                units).
               </p>
             )}
           </div>
@@ -227,7 +231,9 @@ export default async function AdminDashboardOverview() {
             className="p-4 rounded-xl border border-sacred-200 bg-sacred-50 hover:bg-saffron-50 hover:border-saffron-300 transition-colors space-y-1 block"
           >
             <Package className="w-5 h-5 text-saffron-700" />
-            <span className="font-bold text-sacred-950 block">Manage Specimens</span>
+            <span className="font-bold text-sacred-950 block">
+              Manage Specimens
+            </span>
             <span className="text-muted-foreground text-[11px]">
               Add new beads, adjust prices, edit stocks
             </span>
@@ -238,7 +244,9 @@ export default async function AdminDashboardOverview() {
             className="p-4 rounded-xl border border-sacred-200 bg-sacred-50 hover:bg-saffron-50 hover:border-saffron-300 transition-colors space-y-1 block"
           >
             <ShoppingCart className="w-5 h-5 text-saffron-700" />
-            <span className="font-bold text-sacred-950 block">Orders & Shipments</span>
+            <span className="font-bold text-sacred-950 block">
+              Orders & Shipments
+            </span>
             <span className="text-muted-foreground text-[11px]">
               Update order statuses and dispatch tracking
             </span>
@@ -249,7 +257,9 @@ export default async function AdminDashboardOverview() {
             className="p-4 rounded-xl border border-sacred-200 bg-sacred-50 hover:bg-saffron-50 hover:border-saffron-300 transition-colors space-y-1 block"
           >
             <ShieldCheck className="w-5 h-5 text-saffron-700" />
-            <span className="font-bold text-sacred-950 block">Cryptographic Security</span>
+            <span className="font-bold text-sacred-950 block">
+              Cryptographic Security
+            </span>
             <span className="text-muted-foreground text-[11px]">
               Audit SHA-256 hashes and RSA digital signatures
             </span>

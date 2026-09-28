@@ -1,4 +1,5 @@
 import { verifyCertificate } from "@/actions/certificate-actions";
+import type { Metadata } from "next";
 import {
   ShieldCheck,
   Award,
@@ -16,6 +17,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Certificate Reference Lookup",
+  description:
+    "Look up a RudraKart certificate reference and view the record available for that identifier.",
+  alternates: { canonical: "/certificate-verification" },
+};
 
 interface CertificateVerificationPageProps {
   searchParams: {
@@ -56,7 +64,9 @@ export default async function CertificateVerificationPage({
         </h1>
 
         <p className="text-sm sm:text-base text-sacred-800 max-w-xl mx-auto leading-relaxed">
-          Enter the unique serialized certificate number printed on your RudraKart documentation or card to review non-destructive laboratory examination records.
+          Enter the unique serialized certificate number printed on your
+          RudraKart documentation or card to review non-destructive laboratory
+          examination records.
         </p>
       </div>
 
@@ -108,13 +118,15 @@ export default async function CertificateVerificationPage({
                 <div className="space-y-1">
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-bold">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    Authenticity Status: {verificationResult.certificate.verificationStatus}
+                    Record Status:{" "}
+                    {verificationResult.certificate.verificationStatus}
                   </div>
                   <h2 className="font-serif text-2xl font-bold text-sacred-950">
                     {verificationResult.productName}
                   </h2>
                   <p className="text-xs text-muted-foreground font-mono">
-                    Certificate Number: {verificationResult.certificate.certificateNumber}
+                    Certificate Number:{" "}
+                    {verificationResult.certificate.certificateNumber}
                   </p>
                 </div>
 
@@ -133,21 +145,27 @@ export default async function CertificateVerificationPage({
               {/* Verified Data Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
                 <div className="p-4 rounded-xl bg-sacred-50 border border-sacred-200 space-y-1">
-                  <span className="text-muted-foreground block">Mukhi Facets</span>
+                  <span className="text-muted-foreground block">
+                    Mukhi Facets
+                  </span>
                   <span className="font-serif text-lg font-bold text-sacred-950">
                     {verificationResult.certificate.mukhi} Mukhi
                   </span>
                 </div>
 
                 <div className="p-4 rounded-xl bg-sacred-50 border border-sacred-200 space-y-1">
-                  <span className="text-muted-foreground block">Botanical Origin</span>
+                  <span className="text-muted-foreground block">
+                    Botanical Origin
+                  </span>
                   <span className="font-semibold text-sacred-950">
                     {verificationResult.certificate.origin}
                   </span>
                 </div>
 
                 <div className="p-4 rounded-xl bg-sacred-50 border border-sacred-200 space-y-1">
-                  <span className="text-muted-foreground block">Weight (Grams)</span>
+                  <span className="text-muted-foreground block">
+                    Weight (Grams)
+                  </span>
                   <span className="font-serif text-lg font-bold text-sacred-950">
                     {verificationResult.certificate.weightGrams
                       ? `${verificationResult.certificate.weightGrams} g`
@@ -156,7 +174,9 @@ export default async function CertificateVerificationPage({
                 </div>
 
                 <div className="p-4 rounded-xl bg-sacred-50 border border-sacred-200 space-y-1">
-                  <span className="text-muted-foreground block">Dimensions</span>
+                  <span className="text-muted-foreground block">
+                    Dimensions
+                  </span>
                   <span className="font-semibold text-sacred-950">
                     {verificationResult.certificate.dimensions || "N/A"}
                   </span>
@@ -175,7 +195,8 @@ export default async function CertificateVerificationPage({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                   <div className="p-4 rounded-lg bg-white border border-sacred-200 space-y-1.5">
                     <span className="font-bold text-sacred-900 block flex items-center gap-1.5">
-                      <Layers className="w-3.5 h-3.5 text-saffron-700" /> Digital X-Ray Radiograph
+                      <Layers className="w-3.5 h-3.5 text-saffron-700" />{" "}
+                      Digital X-Ray Radiograph
                     </span>
                     <p className="text-muted-foreground leading-relaxed">
                       {verificationResult.certificate.xrayStatus}
@@ -184,7 +205,8 @@ export default async function CertificateVerificationPage({
 
                   <div className="p-4 rounded-lg bg-white border border-sacred-200 space-y-1.5">
                     <span className="font-bold text-sacred-900 block flex items-center gap-1.5">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Microscopic Cellular Analysis
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />{" "}
+                      Microscopic Cellular Analysis
                     </span>
                     <p className="text-muted-foreground leading-relaxed">
                       {verificationResult.certificate.microscopicCheck}
@@ -193,18 +215,21 @@ export default async function CertificateVerificationPage({
                 </div>
 
                 <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-muted-foreground border-t border-sacred-200">
-                  <span>Testing Body: {verificationResult.certificate.laboratory}</span>
+                  <span>
+                    Testing Body: {verificationResult.certificate.laboratory}
+                  </span>
                   <span className="flex items-center gap-1">
                     <Calendar className="w-3.5 h-3.5" /> Tested On:{" "}
                     {new Date(
-                      verificationResult.certificate.inspectionDate
+                      verificationResult.certificate.inspectionDate,
                     ).toLocaleDateString()}
                   </span>
                 </div>
               </div>
 
               <div className="text-xs text-center text-muted-foreground italic bg-amber-50 p-3 rounded-lg border border-amber-200">
-                * Note: This verification record is generated using academic demo data for the BSc CSIT 6th Semester RudraKart project.
+                * Note: This verification record is generated using academic
+                demo data for the BSc CSIT 6th Semester RudraKart project.
               </div>
             </div>
           ) : (

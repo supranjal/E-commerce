@@ -1,9 +1,9 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { isAdmin } from "@/lib/auth";
 import {
   computeTransactionHash,
-  createSecureTransactionRecord,
   getTransactionKeyPair,
   toCanonicalPayload,
   verifyTransactionIntegrity,
@@ -24,82 +24,16 @@ export interface TransactionAuditItem {
   signatureAlgorithm: string;
   canonicalPayload: string;
   createdAt: string;
-  isSimulated?: boolean;
-}
-
-// Built-in educational sample records with valid cryptographic hashes & signatures
-function getFallbackDemoTransactions(): TransactionAuditItem[] {
-  const demoList = [
-    {
-      transactionId: "TXN-DEMO-001",
-      orderId: "ord-sample-01",
-      orderNumber: "RK-2026-9041",
-      customerName: "Aarav Sharma",
-      amount: 145000,
-      currency: "NPR",
-      paymentMethod: "ESEWA",
-      paymentStatus: "PAID",
-      timestamp: "2026-03-24T10:15:00.000Z",
-    },
-    {
-      transactionId: "TXN-DEMO-002",
-      orderId: "ord-sample-02",
-      orderNumber: "RK-2026-9042",
-      customerName: "Sunita Poudel",
-      amount: 16800,
-      currency: "NPR",
-      paymentMethod: "KHALTI",
-      paymentStatus: "PAID",
-      timestamp: "2026-03-23T14:30:00.000Z",
-    },
-    {
-      transactionId: "TXN-DEMO-003",
-      orderId: "ord-sample-03",
-      orderNumber: "RK-2026-9044",
-      customerName: "David Miller",
-      amount: 210000,
-      currency: "NPR",
-      paymentMethod: "CARD",
-      paymentStatus: "PAID",
-      timestamp: "2026-03-22T09:00:00.000Z",
-    },
-  ];
-
-  return demoList.map((demo) => {
-    const sec = createSecureTransactionRecord({
-      transactionId: demo.transactionId,
-      orderId: demo.orderId,
-      orderNumber: demo.orderNumber,
-      amount: demo.amount,
-      currency: demo.currency,
-      paymentMethod: demo.paymentMethod,
-      timestamp: demo.timestamp,
-    });
-
-    return {
-      id: `fallback-${demo.transactionId}`,
-      transactionId: demo.transactionId,
-      orderId: demo.orderId,
-      orderNumber: demo.orderNumber,
-      customerName: demo.customerName,
-      amount: demo.amount,
-      currency: demo.currency,
-      paymentMethod: demo.paymentMethod,
-      paymentStatus: demo.paymentStatus,
-      transactionHash: sec.transactionHash,
-      digitalSignature: sec.digitalSignature,
-      signatureAlgorithm: sec.signatureAlgorithm,
-      canonicalPayload: sec.canonicalPayload,
-      createdAt: demo.timestamp,
-      isSimulated: true,
-    };
-  });
 }
 
 /**
  * Fetches all transaction security records from PostgreSQL with cryptographic hashes and signatures.
  */
-export async function getTransactionSecurityRecords(): Promise<TransactionAuditItem[]> {
+export async function getTransactionSecurityRecords(): Promise<
+  TransactionAuditItem[]
+> {
+  if (!(await isAdmin())) return [];
+
   try {
     const dbTransactions = await prisma.paymentTransaction.findMany({
       orderBy: { createdAt: "desc" },
@@ -113,33 +47,29 @@ export async function getTransactionSecurityRecords(): Promise<TransactionAuditI
       },
     });
 
-    const mappedDbRecords: TransactionAuditItem[] = dbTransactions.map((tx) => ({
-      id: tx.id,
-      transactionId: tx.transactionId,
-      orderId: tx.orderId,
-      orderNumber: tx.order?.orderNumber || "UNKNOWN",
-      customerName: tx.order?.customerName || "Customer",
-      amount: tx.amount,
-      currency: tx.currency,
-      paymentMethod: tx.paymentMethod,
-      paymentStatus: tx.paymentStatus,
-      transactionHash: tx.transactionHash,
-      digitalSignature: tx.digitalSignature,
-      signatureAlgorithm: tx.signatureAlgorithm,
-      canonicalPayload: tx.canonicalPayload || "",
-      createdAt: tx.createdAt.toISOString(),
-      isSimulated: false,
-    }));
+    const mappedDbRecords: TransactionAuditItem[] = dbTransactions.map(
+      (tx) => ({
+        id: tx.id,
+        transactionId: tx.transactionId,
+        orderId: tx.orderId,
+        orderNumber: tx.order?.orderNumber || "UNKNOWN",
+        customerName: tx.order?.customerName || "Customer",
+        amount: tx.amount,
+        currency: tx.currency,
+        paymentMethod: tx.paymentMethod,
+        paymentStatus: tx.paymentStatus,
+        transactionHash: tx.transactionHash,
+        digitalSignature: tx.digitalSignature,
+        signatureAlgorithm: tx.signatureAlgorithm,
+        canonicalPayload: tx.canonicalPayload || "",
+        createdAt: tx.createdAt.toISOString(),
+        isSimulated: false,
+      }),
+    );
 
-    // If database has records, return them merged with educational fallbacks
-    const fallbacks = getFallbackDemoTransactions();
-    const existingTxIds = new Set(mappedDbRecords.map((r) => r.transactionId));
-    const nonDuplicatedFallbacks = fallbacks.filter((f) => !existingTxIds.has(f.transactionId));
-
-    return [...mappedDbRecords, ...nonDuplicatedFallbacks];
-  } catch (error) {
-    console.warn("DB transaction fetch failed, providing verified academic demo fallbacks:", error);
-    return getFallbackDemoTransactions();
+    return mappedDbRecords;
+  } catch {
+    return [];
   }
 }
 
@@ -147,6 +77,10 @@ export async function getTransactionSecurityRecords(): Promise<TransactionAuditI
  * Recalculates SHA-256 hash and verifies RSA digital signature on a transaction record.
  */
 export async function verifyTransactionAction(transactionId: string) {
+  if (!(await isAdmin())) {
+    return { success: false, error: "Admin access required." };
+  }
+
   try {
     let transaction: TransactionAuditItem | undefined;
 
@@ -183,13 +117,6 @@ export async function verifyTransactionAction(transactionId: string) {
         };
       }
     } catch {}
-
-    // Fallback to sample demo
-    if (!transaction) {
-      transaction = getFallbackDemoTransactions().find(
-        (t) => t.transactionId === transactionId
-      );
-    }
 
     if (!transaction) {
       return {
@@ -245,12 +172,25 @@ export async function simulateTamperingAction(params: {
   transactionId: string;
   tamperedAmount: number;
 }) {
+  if (!(await isAdmin())) {
+    return { success: false, error: "Admin access required." };
+  }
+  if (
+    !params.transactionId ||
+    !Number.isFinite(params.tamperedAmount) ||
+    params.tamperedAmount <= 0
+  ) {
+    return { success: false, error: "Enter a valid transaction and amount." };
+  }
+
   try {
     const originalRes = await verifyTransactionAction(params.transactionId);
     if (!originalRes.success || !originalRes.transaction) {
       return {
         success: false,
-        error: originalRes.error || "Could not load base transaction for tampering test.",
+        error:
+          originalRes.error ||
+          "Could not load base transaction for tampering test.",
       };
     }
 
@@ -312,6 +252,9 @@ export async function simulateTamperingAction(params: {
  * Returns the public key information and active signature algorithm for admin security inspection.
  */
 export async function getSecurityPublicKeyInfo() {
+  if (!(await isAdmin())) {
+    throw new Error("Admin access required.");
+  }
   const { publicKey } = getTransactionKeyPair();
   return {
     algorithm: "RSA-SHA256 (2048-bit)",

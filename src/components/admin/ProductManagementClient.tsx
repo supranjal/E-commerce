@@ -8,7 +8,6 @@ import {
   Edit,
   Trash2,
   Eye,
-  ShieldCheck,
   Search,
   CheckCircle2,
   AlertCircle,
@@ -29,16 +28,24 @@ interface Props {
   categories: { id: string; name: string; slug: string }[];
 }
 
-export function ProductManagementClient({ initialProducts, categories }: Props) {
+export function ProductManagementClient({
+  initialProducts,
+  categories,
+}: Props) {
   const [products, setProducts] = useState<ProductItem[]>(initialProducts);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [loading, setLoading] = useState(false);
-  const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [feedback, setFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   // Modals
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
+  const [editingProduct, setEditingProduct] = useState<ProductItem | null>(
+    null,
+  );
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Add Form State
@@ -49,9 +56,9 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
     price: "4500",
     stock: "10",
     origin: "Nepal (Sankhuwasabha)",
-    description: "Authentic sacred Nepali Rudraksha with deep natural Mukhi lines.",
+    description:
+      "Academic demo catalog listing; product details have not been independently verified.",
     imageUrl: "/images/products/rudraksha-beads.jpg",
-    isCertified: true,
   });
 
   // Edit Form State
@@ -64,7 +71,7 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
     stock: "",
     origin: "",
     description: "",
-    isCertified: true,
+    imageUrl: "",
   });
 
   const filteredProducts = products.filter((p) => {
@@ -90,14 +97,16 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
       origin: addForm.origin,
       description: addForm.description,
       imageUrl: addForm.imageUrl,
-      isCertified: addForm.isCertified,
     });
 
     setLoading(false);
     if (res.success && res.product) {
       setProducts([res.product as any, ...products]);
       setShowAddModal(false);
-      setFeedback({ type: "success", message: `Successfully added "${res.product.name}"!` });
+      setFeedback({
+        type: "success",
+        message: `Successfully added "${res.product.name}"!`,
+      });
       setAddForm({
         name: "",
         categoryId: categories[0]?.id || "",
@@ -105,12 +114,15 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
         price: "4500",
         stock: "10",
         origin: "Nepal (Sankhuwasabha)",
-        description: "Authentic sacred Nepali Rudraksha with deep natural Mukhi lines.",
+        description:
+          "Academic demo catalog listing; product details have not been independently verified.",
         imageUrl: "/images/products/rudraksha-beads.jpg",
-        isCertified: true,
       });
     } else {
-      setFeedback({ type: "error", message: res.error || "Failed to add specimen." });
+      setFeedback({
+        type: "error",
+        message: res.error || "Failed to add specimen.",
+      });
     }
   };
 
@@ -125,7 +137,7 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
       stock: String(product.stock),
       origin: product.origin,
       description: product.description,
-      isCertified: Boolean(product.isCertified),
+      imageUrl: product.images?.[0]?.url || "",
     });
   };
 
@@ -143,23 +155,30 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
       stock: Number(editForm.stock),
       origin: editForm.origin,
       description: editForm.description,
-      isCertified: editForm.isCertified,
+      imageUrl: editForm.imageUrl,
     });
 
     setLoading(false);
     if (res.success && res.product) {
       setProducts(
-        products.map((p) => (p.id === editForm.id ? (res.product as any) : p))
+        products.map((p) => (p.id === editForm.id ? (res.product as any) : p)),
       );
       setEditingProduct(null);
-      setFeedback({ type: "success", message: `Updated details for "${res.product.name}".` });
+      setFeedback({
+        type: "success",
+        message: `Updated details for "${res.product.name}".`,
+      });
     } else {
-      setFeedback({ type: "error", message: res.error || "Failed to update specimen." });
+      setFeedback({
+        type: "error",
+        message: res.error || "Failed to update specimen.",
+      });
     }
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to remove "${name}" from the catalog?`)) return;
+    if (!confirm(`Are you sure you want to remove "${name}" from the catalog?`))
+      return;
 
     setLoading(true);
     setFeedback(null);
@@ -168,9 +187,15 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
 
     if (res.success) {
       setProducts(products.filter((p) => p.id !== id));
-      setFeedback({ type: "success", message: res.message || "Specimen removed." });
+      setFeedback({
+        type: "success",
+        message: res.message || "Specimen removed.",
+      });
     } else {
-      setFeedback({ type: "error", message: res.error || "Failed to delete specimen." });
+      setFeedback({
+        type: "error",
+        message: res.error || "Failed to delete specimen.",
+      });
     }
   };
 
@@ -193,7 +218,10 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
             )}
             <span>{feedback.message}</span>
           </div>
-          <button onClick={() => setFeedback(null)} className="p-1 hover:opacity-75">
+          <button
+            onClick={() => setFeedback(null)}
+            className="p-1 hover:opacity-75"
+          >
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -249,13 +277,15 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
                 <th className="p-4">Origin</th>
                 <th className="p-4">Stock</th>
                 <th className="p-4">Price (NPR)</th>
-                <th className="p-4">Certification</th>
                 <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-sacred-100">
               {filteredProducts.map((product) => (
-                <tr key={product.id} className="hover:bg-sacred-50/50 transition-colors">
+                <tr
+                  key={product.id}
+                  className="hover:bg-sacred-50/50 transition-colors"
+                >
                   <td className="p-4 flex items-center gap-3">
                     <div className="relative w-10 h-10 rounded-md overflow-hidden bg-sacred-100 flex-shrink-0">
                       <Image
@@ -281,7 +311,9 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
                   <td className="p-4 font-semibold text-sacred-900">
                     {product.mukhi ? `${product.mukhi} Mukhi` : "Special"}
                   </td>
-                  <td className="p-4 text-muted-foreground">{product.origin}</td>
+                  <td className="p-4 text-muted-foreground">
+                    {product.origin}
+                  </td>
                   <td className="p-4">
                     <span
                       className={`px-2 py-0.5 rounded font-bold text-[11px] ${
@@ -296,19 +328,18 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
                   <td className="p-4 font-bold text-sacred-950">
                     Rs. {product.price.toLocaleString()}
                   </td>
-                  <td className="p-4">
-                    {product.isCertified ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-300 font-semibold text-[10px]">
-                        <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                        Certified
-                      </span>
-                    ) : (
-                      <span className="text-muted-foreground text-[11px]">Standard</span>
-                    )}
-                  </td>
                   <td className="p-4 text-right space-x-1.5 whitespace-nowrap">
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0" asChild>
-                      <Link href={`/products/${product.slug}`} target="_blank" title="View product">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      asChild
+                    >
+                      <Link
+                        href={`/products/${product.slug}`}
+                        target="_blank"
+                        title="View product"
+                      >
                         <Eye className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
                       </Link>
                     </Button>
@@ -335,7 +366,10 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
               ))}
               {filteredProducts.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-muted-foreground text-xs">
+                  <td
+                    colSpan={7}
+                    className="p-8 text-center text-muted-foreground text-xs"
+                  >
                     No matching specimens found in catalog.
                   </td>
                 </tr>
@@ -365,22 +399,30 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
             <form onSubmit={handleAddSubmit} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="font-bold text-sacred-900">Specimen Name *</label>
+                  <label className="font-bold text-sacred-900">
+                    Specimen Name *
+                  </label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. 5 Mukhi Collector Rudraksha"
                     value={addForm.name}
-                    onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+                    onChange={(e) =>
+                      setAddForm({ ...addForm, name: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none focus:ring-1 focus:ring-saffron-600"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-sacred-900">Category *</label>
+                  <label className="font-bold text-sacred-900">
+                    Category *
+                  </label>
                   <select
                     value={addForm.categoryId}
-                    onChange={(e) => setAddForm({ ...addForm, categoryId: e.target.value })}
+                    onChange={(e) =>
+                      setAddForm({ ...addForm, categoryId: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                   >
                     {categories.map((c) => (
@@ -392,85 +434,96 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-sacred-900">Price (NPR Rs.) *</label>
+                  <label className="font-bold text-sacred-900">
+                    Price (NPR Rs.) *
+                  </label>
                   <input
                     type="number"
                     required
                     min="1"
                     value={addForm.price}
-                    onChange={(e) => setAddForm({ ...addForm, price: e.target.value })}
+                    onChange={(e) =>
+                      setAddForm({ ...addForm, price: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-sacred-900">Initial Stock Units *</label>
+                  <label className="font-bold text-sacred-900">
+                    Initial Stock Units *
+                  </label>
                   <input
                     type="number"
                     required
                     min="0"
                     value={addForm.stock}
-                    onChange={(e) => setAddForm({ ...addForm, stock: e.target.value })}
+                    onChange={(e) =>
+                      setAddForm({ ...addForm, stock: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-sacred-900">Mukhi Facets (Optional)</label>
+                  <label className="font-bold text-sacred-900">
+                    Mukhi Facets (Optional)
+                  </label>
                   <input
                     type="number"
                     min="1"
                     max="21"
                     placeholder="1-14 (leave blank for combinations)"
                     value={addForm.mukhi}
-                    onChange={(e) => setAddForm({ ...addForm, mukhi: e.target.value })}
+                    onChange={(e) =>
+                      setAddForm({ ...addForm, mukhi: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-sacred-900">Himalayan Origin</label>
+                  <label className="font-bold text-sacred-900">
+                    Himalayan Origin
+                  </label>
                   <input
                     type="text"
                     value={addForm.origin}
-                    onChange={(e) => setAddForm({ ...addForm, origin: e.target.value })}
+                    onChange={(e) =>
+                      setAddForm({ ...addForm, origin: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-sacred-900">Botanical Description</label>
+                <label className="font-bold text-sacred-900">
+                  Botanical Description
+                </label>
                 <textarea
                   rows={3}
                   value={addForm.description}
-                  onChange={(e) => setAddForm({ ...addForm, description: e.target.value })}
+                  onChange={(e) =>
+                    setAddForm({ ...addForm, description: e.target.value })
+                  }
                   className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="font-bold text-sacred-900">Product Image URL</label>
+                <label className="font-bold text-sacred-900">
+                  Product Image URL
+                </label>
                 <input
                   type="text"
                   placeholder="e.g. /images/products/rudraksha-beads.jpg"
                   value={addForm.imageUrl}
-                  onChange={(e) => setAddForm({ ...addForm, imageUrl: e.target.value })}
+                  onChange={(e) =>
+                    setAddForm({ ...addForm, imageUrl: e.target.value })
+                  }
                   className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none font-mono text-[11px]"
                 />
-              </div>
-
-              <div className="flex items-center gap-2 pt-2">
-                <input
-                  type="checkbox"
-                  id="certifiedCheck"
-                  checked={addForm.isCertified}
-                  onChange={(e) => setAddForm({ ...addForm, isCertified: e.target.checked })}
-                  className="rounded border-sacred-300 text-saffron-600 focus:ring-saffron-500"
-                />
-                <label htmlFor="certifiedCheck" className="text-sacred-900 font-semibold cursor-pointer">
-                  Includes Official X-Ray / Laboratory Certificate Record
-                </label>
               </div>
 
               <div className="flex justify-end gap-3 border-t border-sacred-200 pt-4">
@@ -482,7 +535,12 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
                 >
                   Cancel
                 </Button>
-                <Button type="submit" variant="primary" size="sm" disabled={loading}>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="sm"
+                  disabled={loading}
+                >
                   {loading ? "Adding Specimen..." : "Create Specimen"}
                 </Button>
               </div>
@@ -511,12 +569,16 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
             <form onSubmit={handleEditSubmit} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="font-bold text-sacred-900">Specimen Name</label>
+                  <label className="font-bold text-sacred-900">
+                    Specimen Name
+                  </label>
                   <input
                     type="text"
                     required
                     value={editForm.name}
-                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, name: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                   />
                 </div>
@@ -525,7 +587,9 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
                   <label className="font-bold text-sacred-900">Category</label>
                   <select
                     value={editForm.categoryId}
-                    onChange={(e) => setEditForm({ ...editForm, categoryId: e.target.value })}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, categoryId: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                   >
                     {categories.map((c) => (
@@ -537,37 +601,49 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-sacred-900">Price (NPR Rs.)</label>
+                  <label className="font-bold text-sacred-900">
+                    Price (NPR Rs.)
+                  </label>
                   <input
                     type="number"
                     required
                     min="1"
                     value={editForm.price}
-                    onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, price: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-sacred-900">Available Stock Units</label>
+                  <label className="font-bold text-sacred-900">
+                    Available Stock Units
+                  </label>
                   <input
                     type="number"
                     required
                     min="0"
                     value={editForm.stock}
-                    onChange={(e) => setEditForm({ ...editForm, stock: e.target.value })}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, stock: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-sacred-900">Mukhi Facets</label>
+                  <label className="font-bold text-sacred-900">
+                    Mukhi Facets
+                  </label>
                   <input
                     type="number"
                     min="1"
                     max="21"
                     value={editForm.mukhi}
-                    onChange={(e) => setEditForm({ ...editForm, mukhi: e.target.value })}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, mukhi: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                   />
                 </div>
@@ -577,7 +653,9 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
                   <input
                     type="text"
                     value={editForm.origin}
-                    onChange={(e) => setEditForm({ ...editForm, origin: e.target.value })}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, origin: e.target.value })
+                    }
                     className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                   />
                 </div>
@@ -588,22 +666,25 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
                 <textarea
                   rows={3}
                   value={editForm.description}
-                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, description: e.target.value })
+                  }
                   className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none"
                 />
               </div>
 
-              <div className="flex items-center gap-2 pt-1">
-                <input
-                  type="checkbox"
-                  id="editCertifiedCheck"
-                  checked={editForm.isCertified}
-                  onChange={(e) => setEditForm({ ...editForm, isCertified: e.target.checked })}
-                  className="rounded border-sacred-300 text-saffron-600 focus:ring-saffron-500"
-                />
-                <label htmlFor="editCertifiedCheck" className="text-sacred-900 font-semibold cursor-pointer">
-                  Certified Himalayan Specimen
+              <div className="space-y-1">
+                <label className="font-bold text-sacred-900">
+                  Product Image URL
                 </label>
+                <input
+                  type="text"
+                  value={editForm.imageUrl}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, imageUrl: e.target.value })
+                  }
+                  className="w-full px-3 py-2 rounded-lg border border-sacred-300 focus:outline-none font-mono text-[11px]"
+                />
               </div>
 
               <div className="flex justify-end gap-3 border-t border-sacred-200 pt-4">
@@ -615,7 +696,12 @@ export function ProductManagementClient({ initialProducts, categories }: Props) 
                 >
                   Cancel
                 </Button>
-                <Button type="submit" variant="primary" size="sm" disabled={loading}>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="sm"
+                  disabled={loading}
+                >
                   {loading ? "Saving Changes..." : "Save Changes"}
                 </Button>
               </div>

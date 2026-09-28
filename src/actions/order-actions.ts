@@ -2,10 +2,9 @@
 
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { OrderStatus, PaymentMethod, PaymentStatus } from "@/types";
+import { authOptions, isAdmin } from "@/lib/auth";
+import { OrderStatus, PaymentMethod } from "@/types";
 import { sendOrderNotification } from "@/lib/email/email.service";
-import { createSecureTransactionRecord } from "@/lib/security/transaction-crypto";
 
 export interface CreateOrderInput {
   userId?: string;
@@ -26,13 +25,6 @@ export interface CreateOrderInput {
   }[];
 }
 
-export interface ConfirmCommercialOrderInput {
-  orderNumber: string;
-  paymentMethod: PaymentMethod;
-  gatewayTransactionId?: string;
-  amount?: number;
-}
-
 export interface UpdateOrderStatusInput {
   orderId: string;
   newStatus: OrderStatus;
@@ -41,243 +33,150 @@ export interface UpdateOrderStatusInput {
 
 export async function createOrder(data: CreateOrderInput) {
   try {
-    const orderNumber = `RK-${new Date().getFullYear()}-${Math.floor(
-      100000 + Math.random() * 900000
-    )}`;
+    const session = await getServerSession(authOptions);
+    const userId = (session?.user as any)?.id;
+    if (!userId) {
+      return { success: false, error: "Sign in before placing an order." };
+    }
+    if (data.paymentMethod !== "CASH_ON_DELIVERY") {
+      return {
+        success: false,
+        error: "Online payment is unavailable. Select Cash on Delivery.",
+      };
+    }
+    if (
+      !data.customerName?.trim() ||
+      !data.customerEmail?.includes("@") ||
+      !data.customerPhone?.trim() ||
+      !data.shippingAddress?.trim() ||
+      !data.city?.trim() ||
+      !Array.isArray(data.items) ||
+      data.items.length === 0 ||
+      data.items.length > 50
+    ) {
+      return {
+        success: false,
+        error: "Enter valid shipping details and at least one item.",
+      };
+    }
 
-    const total = data.items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-
-    try {
-      // Find or associate a user record
-      const session = await getServerSession(authOptions);
-      let targetUserId = (session?.user as any)?.id || data.userId;
-      if (!targetUserId && data.customerEmail) {
-        const existing = await prisma.user.findFirst({
-          where: { email: data.customerEmail.toLowerCase().trim() },
-        });
-        if (existing) {
-          targetUserId = existing.id;
-        }
-      }
-
-      if (targetUserId) {
-        const order = await prisma.order.create({
-          data: {
-            orderNumber,
-            userId: targetUserId,
-            customerName: data.customerName,
-            customerEmail: data.customerEmail,
-            customerPhone: data.customerPhone,
-            shippingAddress: data.shippingAddress,
-            city: data.city,
-            country: data.country,
-            postalCode: data.postalCode,
-            notes: data.notes,
-            paymentMethod: data.paymentMethod as any,
-            paymentStatus: data.paymentMethod === "CASH_ON_DELIVERY" ? "UNPAID" : "PENDING",
-            status: data.paymentMethod === "CASH_ON_DELIVERY" ? "CONFIRMED" : "PENDING",
-            total,
-            currency: data.currency,
-            items: {
-              create: data.items.map((item) => ({
-                productId: item.productId,
-                quantity: item.quantity,
-                price: item.price,
-              })),
-            },
-          },
-          include: {
-            items: {
-              include: {
-                product: true,
-              },
-            },
-          },
-        });
-
-        // For Cash on Delivery, order is confirmed immediately upon booking
-        if (data.paymentMethod === "CASH_ON_DELIVERY") {
-          const transactionId = `TXN-COD-${Math.floor(10000000 + Math.random() * 90000000)}`;
-          const cryptoRecord = createSecureTransactionRecord({
-            transactionId,
-            orderId: order.id,
-            orderNumber: order.orderNumber,
-            amount: order.total,
-            currency: order.currency,
-            paymentMethod: "CASH_ON_DELIVERY",
-          });
-
-          await prisma.paymentTransaction.create({
-            data: {
-              transactionId,
-              orderId: order.id,
-              amount: order.total,
-              currency: order.currency,
-              paymentMethod: "CASH_ON_DELIVERY",
-              paymentStatus: "UNPAID",
-              transactionHash: cryptoRecord.transactionHash,
-              digitalSignature: cryptoRecord.digitalSignature,
-              signatureAlgorithm: cryptoRecord.signatureAlgorithm,
-              canonicalPayload: cryptoRecord.canonicalPayload,
-            },
-          });
-
-          await sendOrderNotification({
-            order,
-            previousStatus: "PENDING",
-            newStatus: "CONFIRMED",
-          });
-        }
-
+    const quantities = new Map<string, number>();
+    for (const item of data.items) {
+      if (
+        !item.productId ||
+        !Number.isInteger(item.quantity) ||
+        item.quantity < 1 ||
+        item.quantity > 99
+      ) {
         return {
-          success: true,
-          orderId: order.id,
-          orderNumber: order.orderNumber,
-          total,
-          currency: data.currency,
-          paymentMethod: data.paymentMethod,
+          success: false,
+          error: "Cart contains an invalid product or quantity.",
         };
       }
-    } catch (dbError) {
-      console.warn("DB order insert fallback:", dbError);
+      quantities.set(
+        item.productId,
+        (quantities.get(item.productId) || 0) + item.quantity,
+      );
     }
 
-    // Fallback in-memory order object
-    return {
-      success: true,
-      orderId: `order-${Date.now()}`,
-      orderNumber,
-      total,
-      currency: data.currency,
-      paymentMethod: data.paymentMethod,
-    };
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || "Failed to create order. Please check your details.",
-    };
-  }
-}
-
-export async function confirmCommercialOrderPayment(
-  data: ConfirmCommercialOrderInput
-) {
-  try {
-    const commercialConfirmationId = `COM-${new Date().getFullYear()}-${Math.floor(
-      100000 + Math.random() * 900000
+    const orderNumber = `RK-${new Date().getFullYear()}-${Math.floor(
+      100000 + Math.random() * 900000,
     )}`;
-    const confirmedAt = new Date().toISOString();
-    const transactionId =
-      data.gatewayTransactionId ||
-      `TXN-${data.paymentMethod}-${Math.floor(10000000 + Math.random() * 90000000)}`;
+    const order = await prisma.$transaction(async (tx) => {
+      const products = await tx.product.findMany({
+        where: { id: { in: Array.from(quantities.keys()) } },
+      });
+      if (products.length !== quantities.size) {
+        throw new Error("One or more products are no longer available.");
+      }
 
-    try {
-      // 1. Transition status to CONFIRMED and paymentStatus to PAID
-      const order = await prisma.order.update({
-        where: { orderNumber: data.orderNumber },
+      let total = 0;
+      for (const product of products) {
+        const quantity = quantities.get(product.id)!;
+        const stockUpdate = await tx.product.updateMany({
+          where: { id: product.id, stock: { gte: quantity } },
+          data: { stock: { decrement: quantity } },
+        });
+        if (stockUpdate.count !== 1) {
+          throw new Error(`${product.name} does not have enough stock.`);
+        }
+        total += product.price * quantity;
+      }
+
+      return tx.order.create({
         data: {
-          paymentStatus: "PAID",
+          orderNumber,
+          userId,
+          customerName: data.customerName.trim(),
+          customerEmail: data.customerEmail.trim().toLowerCase(),
+          customerPhone: data.customerPhone.trim(),
+          shippingAddress: data.shippingAddress.trim(),
+          city: data.city.trim(),
+          country: data.country?.trim() || "Nepal",
+          postalCode: data.postalCode?.trim(),
+          notes: data.notes?.trim(),
+          paymentMethod: "CASH_ON_DELIVERY",
+          paymentStatus: "UNPAID",
           status: "CONFIRMED",
-          transactionId,
-        },
-        include: {
+          total,
+          currency: "NPR",
           items: {
-            include: {
-              product: true,
-            },
+            create: products.map((product) => ({
+              productId: product.id,
+              quantity: quantities.get(product.id)!,
+              price: product.price,
+            })),
           },
         },
       });
+    });
 
-      // 2. Cryptographically hash and digitally sign the transaction (Requirements 9, 11, 12, 18)
-      const cryptoRecord = createSecureTransactionRecord({
-        transactionId,
-        orderId: order.id,
-        orderNumber: order.orderNumber,
-        amount: order.total,
-        currency: order.currency || "NPR",
-        paymentMethod: data.paymentMethod,
-        timestamp: confirmedAt,
-      });
-
-      // 3. Persist PaymentTransaction record with SHA-256 hash & digital signature
-      await prisma.paymentTransaction.upsert({
-        where: { transactionId },
-        update: {
-          amount: order.total,
-          currency: order.currency,
-          paymentMethod: data.paymentMethod as any,
-          paymentStatus: "PAID",
-          transactionHash: cryptoRecord.transactionHash,
-          digitalSignature: cryptoRecord.digitalSignature,
-          signatureAlgorithm: cryptoRecord.signatureAlgorithm,
-          canonicalPayload: cryptoRecord.canonicalPayload,
-        },
-        create: {
-          transactionId,
-          orderId: order.id,
-          amount: order.total,
-          currency: order.currency || "NPR",
-          paymentMethod: data.paymentMethod as any,
-          paymentStatus: "PAID",
-          transactionHash: cryptoRecord.transactionHash,
-          digitalSignature: cryptoRecord.digitalSignature,
-          signatureAlgorithm: cryptoRecord.signatureAlgorithm,
-          canonicalPayload: cryptoRecord.canonicalPayload,
-        },
-      });
-
-      // 4. Trigger Order Confirmed notification (Requirement 1 & 4)
-      try {
-        await sendOrderNotification({
-          order,
-          previousStatus: "PENDING",
-          newStatus: "CONFIRMED",
-        });
-      } catch (emailErr) {
-        console.warn("Order confirmation email dispatch failed:", emailErr);
-      }
-
-      return {
-        success: true,
-        orderId: order.id,
-        orderNumber: order.orderNumber,
-        paymentMethod: data.paymentMethod,
-        transactionId,
-        paymentStatus: order.paymentStatus,
-        orderStatus: order.status,
-        commercialConfirmationId,
-        confirmedAt,
-        transactionHash: cryptoRecord.transactionHash,
-        digitalSignature: cryptoRecord.digitalSignature,
+    try {
+      await sendOrderNotification({
         order,
-      };
-    } catch {
-      return {
-        success: true,
-        orderNumber: data.orderNumber,
-        paymentMethod: data.paymentMethod,
-        transactionId,
-        paymentStatus: "PAID" as PaymentStatus,
-        orderStatus: "CONFIRMED" as OrderStatus,
-        commercialConfirmationId,
-        confirmedAt,
-      };
+        previousStatus: "PENDING",
+        newStatus: "CONFIRMED",
+      });
+    } catch (error) {
+      console.warn("Order confirmation email dispatch failed:", error);
     }
+
+    return {
+      success: true,
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+      total: order.total,
+      currency: order.currency,
+      paymentMethod: order.paymentMethod,
+    };
   } catch (error: any) {
     return {
       success: false,
-      error: error.message || "Unable to confirm commercial payment.",
+      error: error.message || "Order could not be saved. Please try again.",
     };
   }
 }
 
 export async function updateOrderStatus(input: UpdateOrderStatusInput) {
+  if (!(await isAdmin())) {
+    return { success: false, error: "Admin access required." };
+  }
+
   try {
     const { orderId, newStatus, trackingNumber } = input;
+    if (
+      !orderId ||
+      ![
+        "PENDING",
+        "CONFIRMED",
+        "PROCESSING",
+        "SHIPPED",
+        "DELIVERED",
+        "CANCELLED",
+      ].includes(newStatus)
+    ) {
+      return { success: false, error: "Invalid order status update." };
+    }
 
     // Fetch order first to check for duplicate/no-op status transition
     const existing = await prisma.order.findUnique({
@@ -300,8 +199,18 @@ export async function updateOrderStatus(input: UpdateOrderStatusInput) {
 
     const previousStatus = existing.status;
 
+    if (previousStatus === "CANCELLED" && newStatus !== "CANCELLED") {
+      return {
+        success: false,
+        error: "Cancelled orders cannot be reopened.",
+      };
+    }
+
     // Duplicate protection: Do not trigger if status hasn't changed
-    if (previousStatus === newStatus && (!trackingNumber || trackingNumber === existing.trackingNumber)) {
+    if (
+      previousStatus === newStatus &&
+      (!trackingNumber || trackingNumber === existing.trackingNumber)
+    ) {
       return {
         success: true,
         message: `Order is already in ${newStatus} status. Duplicate transition ignored.`,
@@ -312,19 +221,35 @@ export async function updateOrderStatus(input: UpdateOrderStatusInput) {
       };
     }
 
-    const updated = await prisma.order.update({
-      where: { id: orderId },
-      data: {
-        status: newStatus as any,
-        ...(trackingNumber ? { trackingNumber } : {}),
-      },
-      include: {
-        items: {
-          include: {
-            product: true,
-          },
+    const updated = await prisma.$transaction(async (tx) => {
+      const statusUpdate = await tx.order.updateMany({
+        where: { id: orderId, status: previousStatus },
+        data: {
+          status: newStatus as any,
+          ...(trackingNumber ? { trackingNumber } : {}),
         },
-      },
+      });
+      if (statusUpdate.count !== 1) {
+        throw new Error(
+          "Order status changed concurrently. Refresh and try again.",
+        );
+      }
+
+      if (newStatus === "CANCELLED") {
+        for (const item of existing.items) {
+          await tx.product.update({
+            where: { id: item.productId },
+            data: { stock: { increment: item.quantity } },
+          });
+        }
+      }
+
+      return tx.order.findUniqueOrThrow({
+        where: { id: orderId },
+        include: {
+          items: { include: { product: true } },
+        },
+      });
     });
 
     // Trigger lifecycle email notification (CONFIRMED -> PROCESSING -> SHIPPED -> DELIVERED)
@@ -353,8 +278,11 @@ export async function updateOrderStatus(input: UpdateOrderStatusInput) {
   }
 }
 
-
 export async function getAdminOrders() {
+  if (!(await isAdmin())) {
+    return { success: false, orders: [], error: "Admin access required." };
+  }
+
   try {
     const orders = await prisma.order.findMany({
       orderBy: { createdAt: "desc" },
@@ -374,7 +302,10 @@ export async function getAdminOrders() {
       orders,
     };
   } catch (error: any) {
-    console.warn("Could not fetch DB orders for admin, returning empty array:", error.message);
+    console.warn(
+      "Could not fetch DB orders for admin, returning empty array:",
+      error.message,
+    );
     return {
       success: false,
       orders: [],
@@ -382,4 +313,3 @@ export async function getAdminOrders() {
     };
   }
 }
-

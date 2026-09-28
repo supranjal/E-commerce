@@ -4,13 +4,17 @@ import { Suspense, useState } from "react";
 import { getSession, signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Sparkles, Lock, Mail, ArrowRight, ShieldCheck, AlertCircle } from "lucide-react";
+import { Sparkles, Lock, Mail, ArrowRight, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl");
+  const requestedCallback = searchParams.get("callbackUrl");
+  const callbackUrl =
+    requestedCallback?.startsWith("/") && !requestedCallback.startsWith("//")
+      ? requestedCallback
+      : null;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -46,16 +50,6 @@ function LoginForm() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const setDemoAdmin = () => {
-    setEmail("admin@rudrakart.com");
-    setPassword("Admin@12345");
-  };
-
-  const setDemoCustomer = () => {
-    setEmail("customer@rudrakart.com");
-    setPassword("Customer@12345");
   };
 
   return (
@@ -126,36 +120,17 @@ function LoginForm() {
             disabled={loading}
             className="w-full gap-2 shadow"
           >
-            {loading ? "Signing in..." : "Sign In"} <ArrowRight className="w-4 h-4" />
+            {loading ? "Signing in..." : "Sign In"}{" "}
+            <ArrowRight className="w-4 h-4" />
           </Button>
         </form>
 
-        {/* Academic Demo Fast Access */}
-        <div className="p-4 rounded-xl bg-sacred-50 border border-sacred-200 space-y-2.5">
-          <span className="text-[11px] font-bold text-sacred-900 block text-center uppercase tracking-wider">
-            Academic Fast-Fill Evaluation Demo
-          </span>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={setDemoAdmin}
-              className="px-2.5 py-1.5 rounded-md bg-white border border-sacred-300 text-[11px] font-semibold text-sacred-800 hover:bg-saffron-50 hover:border-saffron-400 transition-colors shadow-xs"
-            >
-              👑 Fill Admin Demo
-            </button>
-            <button
-              type="button"
-              onClick={setDemoCustomer}
-              className="px-2.5 py-1.5 rounded-md bg-white border border-sacred-300 text-[11px] font-semibold text-sacred-800 hover:bg-saffron-50 hover:border-saffron-400 transition-colors shadow-xs"
-            >
-              👤 Fill Customer Demo
-            </button>
-          </div>
-        </div>
-
         <div className="text-center text-xs text-muted-foreground">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="font-bold text-saffron-700 hover:underline">
+          <Link
+            href="/register"
+            className="font-bold text-saffron-700 hover:underline"
+          >
             Register as Customer
           </Link>
         </div>
@@ -166,7 +141,13 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-[85vh] flex items-center justify-center p-4">Loading login...</div>}>
+    <Suspense
+      fallback={
+        <div className="min-h-[85vh] flex items-center justify-center p-4">
+          Loading login...
+        </div>
+      }
+    >
       <LoginForm />
     </Suspense>
   );

@@ -136,6 +136,7 @@ export function CartDrawer() {
                                   updateQuantity(product.id, quantity + 1)
                                 }
                                 className="p-1 text-muted-foreground hover:text-foreground"
+                                disabled={quantity >= product.stock}
                               >
                                 <Plus className="w-3 h-3" />
                               </button>
@@ -176,7 +177,8 @@ export function CartDrawer() {
                       asChild
                     >
                       <Link href="/checkout">
-                        Proceed to Secure Checkout <ArrowRight className="w-4 h-4" />
+                        Proceed to Secure Checkout{" "}
+                        <ArrowRight className="w-4 h-4" />
                       </Link>
                     </Button>
                     <Button

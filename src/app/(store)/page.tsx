@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { Metadata } from "next";
 import {
   ShieldCheck,
   Award,
@@ -19,18 +20,51 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export const dynamic = "force-dynamic";
 
+export const metadata: Metadata = {
+  title: "Rudraksha and Puja Products",
+  description:
+    "Explore Rudraksha beads, malas, and puja products in the RudraKart online catalog.",
+  alternates: { canonical: "/" },
+};
+
 export default async function HomePage() {
   const allProducts = await getProducts();
   const categories = await getCategories();
 
   const featuredProducts = allProducts.filter((p) => p.featured).slice(0, 4);
   const rareProducts = allProducts.filter((p) => p.isSpecial).slice(0, 4);
-  const regularMukhis = allProducts.filter((p) => p.mukhi && p.mukhi <= 7).slice(0, 4);
+  const regularMukhis = allProducts
+    .filter((p) => p.mukhi && p.mukhi <= 7)
+    .slice(0, 4);
 
   const mukhiNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "RudraKart",
+    url: process.env.NEXT_PUBLIC_APP_URL || "https://rudrakart.vercel.app",
+  };
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "RudraKart",
+    url: process.env.NEXT_PUBLIC_APP_URL || "https://rudrakart.vercel.app",
+  };
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(organizationJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(websiteJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       {/* 1. HERO SECTION */}
       <section className="relative overflow-hidden bg-gradient-to-b from-white via-sacred-100/50 to-sacred-50 py-16 sm:py-24 border-b border-sacred-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -39,29 +73,42 @@ export default async function HomePage() {
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-saffron-100 border border-saffron-300 text-saffron-950 text-xs font-bold uppercase tracking-wider shadow-xs">
                 <Sparkles className="w-3.5 h-3.5 text-saffron-700" />
-                Himalayan Sacred Botanicals • X-Ray Certified
+                Rudraksha Products and Puja Supplies
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-sacred-950 tracking-tight leading-[1.15]">
-                Authentic & Certified{" "}
+                Rudraksha and Puja{" "}
                 <span className="text-saffron-700 underline decoration-gold-500 decoration-wavy underline-offset-8">
-                  Nepali Rudraksha
+                  Products
                 </span>
               </h1>
 
               <p className="text-base sm:text-lg text-stone-800 font-sans max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                Directly harvested from the sacred high-altitude groves of Sankhuwasabha and Dingla, Nepal. Every rare bead is radiologically inspected, laboratory-documented, and backed by verifiable certificate IDs.
+                Browse Rudraksha beads, malas, and puja accessories. Product
+                details and sample certificate records are provided for this
+                academic e-commerce demonstration.
               </p>
 
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
-                <Button variant="primary" size="lg" className="gap-2 shadow-lg text-base font-bold" asChild>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="gap-2 shadow-lg text-base font-bold"
+                  asChild
+                >
                   <Link href="/products">
                     Explore Sacred Beads <ArrowRight className="w-4 h-4" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" className="gap-2 border-stone-400 bg-white text-stone-900 font-bold shadow-xs hover:bg-stone-50" asChild>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="gap-2 border-stone-400 bg-white text-stone-900 font-bold shadow-xs hover:bg-stone-50"
+                  asChild
+                >
                   <Link href="/certificate-verification">
-                    <Award className="w-4 h-4 text-gold-700" /> Verify Certificate
+                    <Award className="w-4 h-4 text-gold-700" /> Verify
+                    Certificate
                   </Link>
                 </Button>
               </div>
@@ -69,16 +116,28 @@ export default async function HomePage() {
               {/* Trust Indicators */}
               <div className="pt-6 grid grid-cols-3 gap-4 border-t border-sacred-200 text-center lg:text-left">
                 <div>
-                  <span className="font-serif text-2xl sm:text-3xl font-extrabold text-sacred-950">100%</span>
-                  <p className="text-xs font-semibold text-stone-600">Nepali Origin</p>
+                  <span className="font-serif text-2xl sm:text-3xl font-extrabold text-sacred-950">
+                    1–14
+                  </span>
+                  <p className="text-xs font-semibold text-stone-600">
+                    Mukhi Categories
+                  </p>
                 </div>
                 <div>
-                  <span className="font-serif text-2xl sm:text-3xl font-extrabold text-sacred-950">1–14</span>
-                  <p className="text-xs font-semibold text-stone-600">Certified Mukhis</p>
+                  <span className="font-serif text-2xl sm:text-3xl font-extrabold text-sacred-950">
+                    Demo
+                  </span>
+                  <p className="text-xs font-semibold text-stone-600">
+                    Sample Records
+                  </p>
                 </div>
                 <div>
-                  <span className="font-serif text-2xl sm:text-3xl font-extrabold text-sacred-950">X-Ray</span>
-                  <p className="text-xs font-semibold text-stone-600">Chamber Tested</p>
+                  <span className="font-serif text-2xl sm:text-3xl font-extrabold text-sacred-950">
+                    COD
+                  </span>
+                  <p className="text-xs font-semibold text-stone-600">
+                    Available Checkout
+                  </p>
                 </div>
               </div>
             </div>
@@ -86,20 +145,21 @@ export default async function HomePage() {
             {/* Right Hero Image Card */}
             <div className="lg:col-span-5 relative">
               <div className="relative mx-auto max-w-md rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-sacred-950">
-                <div className="relative aspect-4/5 w-full">
+                <div className="relative aspect-[4/5] w-full">
                   <Image
-                    src="https://ts1.mm.bing.net/th?id=OIP.bJamoS-njJWmQNuhw_n2YgHaFS"
-                    alt="Authentic 1 Mukhi Savar Rudraksha"
+                    src="/images/products/1-mukhi-chandrakar-rudraksha.jpg"
+                    alt="1 Mukhi Chandrakar Rudraksha product photograph"
                     fill
                     className="object-contain p-4"
                     quality={80}
                     priority
+                    sizes="(max-width: 1024px) 100vw, 40vw"
                   />
-                  
+
                   {/* Floating Certificate Badge */}
                   <div className="absolute top-4 right-4 bg-sacred-950/95 backdrop-blur-md px-3 py-1.5 rounded-lg border border-gold-400 shadow-lg text-xs font-bold text-gold-300 flex items-center gap-1.5">
                     <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    ID: RK-DEMO-00001
+                    Sample ID: RK-DEMO-00001
                   </div>
                 </div>
               </div>
@@ -115,7 +175,7 @@ export default async function HomePage() {
             Browse by Sacred Mukhi
           </h2>
           <p className="text-xs sm:text-sm font-medium text-stone-600 max-w-xl mx-auto">
-            Select a specific natural face count to explore verified specifications, origins, and botanical details.
+            Browse the academic sample catalog by Mukhi category.
           </p>
         </div>
 
@@ -132,7 +192,9 @@ export default async function HomePage() {
               <span className="text-xs font-bold text-stone-900 mt-2 group-hover:text-saffron-800">
                 {m} Mukhi
               </span>
-              <span className="text-[10px] font-medium text-stone-500">Nepali Bead</span>
+              <span className="text-[10px] font-medium text-stone-500">
+                Nepali Bead
+              </span>
             </Link>
           ))}
         </div>
@@ -146,11 +208,14 @@ export default async function HomePage() {
               Collector & High-Grade
             </span>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-sacred-950">
-              Featured Authentic Specimens
+              Featured Products
             </h2>
           </div>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/products" className="gap-1.5 font-bold text-stone-800 border-stone-300">
+            <Link
+              href="/products"
+              className="gap-1.5 font-bold text-stone-800 border-stone-300"
+            >
               View All Products <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </Button>
@@ -169,15 +234,17 @@ export default async function HomePage() {
           <div className="relative z-10 max-w-2xl space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/20 text-gold-300 border border-gold-500/40 text-xs font-bold">
               <Award className="w-4 h-4 text-gold-400" />
-              Public Authenticity Registry
+              Sample Certificate Records
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white tracking-tight">
-              Verify Your RudraKart Certificate
+              Look Up a Certificate Reference
             </h2>
 
             <p className="text-sm text-sacred-100 leading-relaxed font-medium">
-              Every genuine RudraKart specimen comes with a unique certificate ID. Verify laboratory X-ray observations, microscopic facet analysis, and exact weight records.
+              The certificate lookup includes academic sample records. These
+              records are illustrative and do not establish independent testing
+              or product authenticity.
             </p>
 
             <form
@@ -189,10 +256,15 @@ export default async function HomePage() {
                 type="text"
                 name="id"
                 defaultValue="RK-DEMO-00001"
-                placeholder="Enter Certificate ID (e.g. RK-DEMO-00001)"
+                placeholder="Sample ID (e.g. RK-DEMO-00001)"
                 className="flex-1 px-4 py-3 text-sm rounded-lg bg-sacred-900 border border-gold-400/60 text-white placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-gold-400 font-mono"
               />
-              <Button type="submit" variant="primary" size="lg" className="whitespace-nowrap font-bold">
+              <Button
+                type="submit"
+                variant="primary"
+                size="lg"
+                className="whitespace-nowrap font-bold"
+              >
                 Verify Now
               </Button>
             </form>
@@ -206,13 +278,14 @@ export default async function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-2 mb-12">
           <span className="text-xs font-extrabold uppercase tracking-wider text-saffron-800">
-            Botanical & Scientific Integrity
+            Storefront Overview
           </span>
           <h2 className="font-serif text-2xl sm:text-3xl font-bold text-sacred-950">
-            Our 4-Stage Verification Protocol
+            Product and Order Information
           </h2>
           <p className="text-xs sm:text-sm font-medium text-stone-600 max-w-xl mx-auto">
-            Distinguishing genuine natural Himalayan beads from carved or manipulated imitations through non-destructive laboratory testing.
+            Product fields and stock are read from the catalog; orders are
+            priced and stock-checked on the server.
           </p>
         </div>
 
@@ -223,10 +296,11 @@ export default async function HomePage() {
                 1
               </div>
               <h3 className="font-serif text-base font-bold text-sacred-950">
-                Direct Foothill Harvest
+                Product Details
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed font-medium">
-                Direct ethical sourcing from verified farmers in Sankhuwasabha and Dingla with zero middleman adulteration.
+                Catalog listings include the product name, description, price,
+                and available specifications.
               </p>
             </CardContent>
           </Card>
@@ -237,10 +311,11 @@ export default async function HomePage() {
                 2
               </div>
               <h3 className="font-serif text-base font-bold text-sacred-950">
-                Microscopic Examination
+                Availability
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed font-medium">
-                Magnified examination of natural thorny ridges, cellular fissures, and elimination of carved fake grooves or glue joints.
+                Stock is checked again when an order is submitted, not only when
+                an item is added to the cart.
               </p>
             </CardContent>
           </Card>
@@ -251,10 +326,11 @@ export default async function HomePage() {
                 3
               </div>
               <h3 className="font-serif text-base font-bold text-sacred-950">
-                Digital X-Ray Radiograph
+                Checkout
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed font-medium">
-                Non-destructive radiological scanning to confirm that the internal natural seed chambers match external Mukhi lines.
+                Cash on Delivery is available. Online payment gateways are not
+                connected.
               </p>
             </CardContent>
           </Card>
@@ -265,10 +341,11 @@ export default async function HomePage() {
                 4
               </div>
               <h3 className="font-serif text-base font-bold text-sacred-950">
-                Unique Certificate Registry
+                Order Status
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed font-medium">
-                Issuance of a serialized certificate documenting exact weight in grams, dimensions in millimeters, and digital verification.
+                Signed-in customers can review saved orders and their current
+                fulfillment status.
               </p>
             </CardContent>
           </Card>
@@ -287,7 +364,10 @@ export default async function HomePage() {
             </h2>
           </div>
           <Button variant="outline" size="sm" asChild>
-            <Link href="/category/rare-sacred-rudraksha" className="gap-1.5 font-bold text-stone-800 border-stone-300">
+            <Link
+              href="/category/rare-sacred-rudraksha"
+              className="gap-1.5 font-bold text-stone-800 border-stone-300"
+            >
               Explore Rare Beads <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </Button>

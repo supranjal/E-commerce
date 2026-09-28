@@ -1,10 +1,18 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { getProducts, getCategories } from "@/actions/product-actions";
 import { ProductCard } from "@/components/storefront/ProductCard";
 import { SlidersHorizontal, RotateCcw, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Rudraksha and Puja Product Catalog",
+  description:
+    "Browse Rudraksha beads, malas, accessories, and puja products by category, Mukhi, price, or origin.",
+  alternates: { canonical: "/products" },
+};
 
 interface ProductsPageProps {
   searchParams: {
@@ -18,12 +26,20 @@ interface ProductsPageProps {
   };
 }
 
-export default async function ProductsPage({ searchParams }: ProductsPageProps) {
+export default async function ProductsPage({
+  searchParams,
+}: ProductsPageProps) {
   const categories = await getCategories();
 
-  const mukhiParam = searchParams.mukhi ? Number(searchParams.mukhi) : undefined;
-  const minPriceParam = searchParams.minPrice ? Number(searchParams.minPrice) : undefined;
-  const maxPriceParam = searchParams.maxPrice ? Number(searchParams.maxPrice) : undefined;
+  const mukhiParam = searchParams.mukhi
+    ? Number(searchParams.mukhi)
+    : undefined;
+  const minPriceParam = searchParams.minPrice
+    ? Number(searchParams.minPrice)
+    : undefined;
+  const maxPriceParam = searchParams.maxPrice
+    ? Number(searchParams.maxPrice)
+    : undefined;
 
   const products = await getProducts({
     categorySlug: searchParams.category,
@@ -45,7 +61,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           Sacred Rudraksha Catalog
         </h1>
         <p className="text-sm font-medium text-stone-600">
-          Showing {products.length} authenticated Himalayan specimens & spiritual accessories.
+          Showing {products.length} authenticated Himalayan specimens &
+          spiritual accessories.
         </p>
       </div>
 
@@ -99,7 +116,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   <Link
                     key={m}
                     href={`/products?mukhi=${m}${
-                      searchParams.category ? `&category=${searchParams.category}` : ""
+                      searchParams.category
+                        ? `&category=${searchParams.category}`
+                        : ""
                     }`}
                     className={`text-center py-1.5 rounded text-xs font-bold border transition-colors ${
                       isSelected
@@ -177,7 +196,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <div className="space-y-1 text-xs">
               <Link
                 href={`/products?sort=price-asc${
-                  searchParams.category ? `&category=${searchParams.category}` : ""
+                  searchParams.category
+                    ? `&category=${searchParams.category}`
+                    : ""
                 }`}
                 className={`block px-3 py-2 rounded-md font-medium ${
                   searchParams.sort === "price-asc"
@@ -189,7 +210,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </Link>
               <Link
                 href={`/products?sort=price-desc${
-                  searchParams.category ? `&category=${searchParams.category}` : ""
+                  searchParams.category
+                    ? `&category=${searchParams.category}`
+                    : ""
                 }`}
                 className={`block px-3 py-2 rounded-md font-medium ${
                   searchParams.sort === "price-desc"
@@ -201,7 +224,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </Link>
               <Link
                 href={`/products?sort=name${
-                  searchParams.category ? `&category=${searchParams.category}` : ""
+                  searchParams.category
+                    ? `&category=${searchParams.category}`
+                    : ""
                 }`}
                 className={`block px-3 py-2 rounded-md font-medium ${
                   searchParams.sort === "name"
@@ -226,7 +251,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 No matching specimens found
               </h3>
               <p className="text-xs text-stone-600 max-w-sm mx-auto">
-                We couldn&apos;t find any Rudraksha matching your current filter criteria. Try resetting filters to view the full collection.
+                We couldn&apos;t find any Rudraksha matching your current filter
+                criteria. Try resetting filters to view the full collection.
               </p>
               <Button variant="outline" size="sm" asChild>
                 <Link href="/products">View All Products</Link>

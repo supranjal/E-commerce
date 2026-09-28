@@ -1,185 +1,76 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ShieldCheck,
-  Microscope,
-  Layers,
-  Award,
-  AlertOctagon,
-  CheckCircle,
-  XCircle,
-  Sparkles,
-  ArrowRight,
-} from "lucide-react";
+import { AlertTriangle, BookOpen, FlaskConical } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  title: "Rudraksha Information and Sample Data Notice",
+  description:
+    "Learn what RudraKart's academic sample catalog and certificate records do and do not establish.",
+  alternates: { canonical: "/authenticity" },
+};
 
 export default function AuthenticityPage() {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
-      {/* Header Banner */}
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-saffron-100 border border-saffron-300 text-saffron-950 text-xs font-semibold uppercase tracking-wider">
-          <ShieldCheck className="w-4 h-4 text-saffron-700" />
-          Transparency & Botanical Integrity
-        </div>
-
-        <h1 className="font-serif text-3xl sm:text-5xl font-bold text-sacred-950 tracking-tight">
-          The Science of Rudraksha Authenticity
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+      <header className="space-y-3 border-b border-sacred-200 pb-6">
+        <p className="text-xs font-semibold uppercase text-saffron-800">
+          Academic Project Information
+        </p>
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-sacred-950">
+          Rudraksha information and sample data
         </h1>
-
-        <p className="text-sm sm:text-base text-sacred-800 max-w-2xl mx-auto leading-relaxed">
-          At RudraKart, we bridge reverent Himalayan tradition with empirical botanical science. Learn how we verify genuine Nepali Elaeocarpus ganitrus beads.
+        <p className="text-sm text-sacred-800 max-w-2xl">
+          RudraKart is an e-commerce demonstration. Its catalog and RK-DEMO
+          certificate records are illustrative and are not independent product,
+          origin, or laboratory verification.
         </p>
-      </div>
+      </header>
 
-      {/* Sourcing Distinction: Nepal vs Other Origins */}
-      <section className="space-y-6">
-        <div className="border-b border-sacred-200 pb-3">
-          <h2 className="font-serif text-2xl font-bold text-sacred-900">
-            1. Why Nepali Rudraksha is Highly Revered
-          </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Geographical and botanical factors that make high-altitude Himalayan specimens unique.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm">
-          <Card className="border-emerald-300 bg-emerald-50/40">
-            <CardContent className="p-6 space-y-3">
-              <div className="flex items-center gap-2 text-emerald-800 font-bold text-base font-serif">
-                <CheckCircle className="w-5 h-5 text-emerald-600" />
-                Nepali Rudraksha (Sankhuwasabha / Dingla)
-              </div>
-              <ul className="space-y-2 text-sacred-800">
-                <li>• <strong>Larger Size:</strong> Typically ranges between 18mm to 30mm+.</li>
-                <li>• <strong>Deep Natural Mukhi Grooves:</strong> Prominent, deeply cleft natural lines running from the top pore to the bottom.</li>
-                <li>• <strong>Internal Compartments:</strong> Symmetrical internal locules containing mature seeds.</li>
-                <li>• <strong>Wood Density:</strong> Dense, naturally oily endocarp with high durability lasting generations.</li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card className="border-sacred-200 bg-white">
-            <CardContent className="p-6 space-y-3">
-              <div className="flex items-center gap-2 text-sacred-900 font-bold text-base font-serif">
-                <ShieldCheck className="w-5 h-5 text-sacred-500" />
-                Indonesian (Java) Rudraksha
-              </div>
-              <ul className="space-y-2 text-sacred-700">
-                <li>• <strong>Smaller Size:</strong> Typically ranges between 3mm to 12mm.</li>
-                <li>• <strong>Subtle Mukhi Lines:</strong> Fainter surface fissures with flatter endocarp.</li>
-                <li>• <strong>Common Use:</strong> Ideal for lightweight daily wristbands and high bead count malas.</li>
-                <li>• <strong>Value:</strong> Natural and authentic, but distinct in size and weight from collector Nepali beads.</li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Non-Destructive Lab Procedures */}
-      <section className="space-y-6">
-        <div className="border-b border-sacred-200 pb-3">
-          <h2 className="font-serif text-2xl font-bold text-sacred-900">
-            2. Laboratory Verification Procedures
-          </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Methods utilized by authenticity laboratories to examine high-value rare Rudraksha without damaging the bead.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="border-sacred-200 bg-white">
-            <CardContent className="p-6 space-y-3">
-              <Layers className="w-8 h-8 text-saffron-700" />
-              <h3 className="font-serif text-base font-bold text-sacred-900">
-                Digital X-Ray Radiography
-              </h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Visualizes the internal seed locules (chambers) non-destructively. In an authentic bead, the number of internal compartments must correspond to the exterior Mukhi lines.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-sacred-200 bg-white">
-            <CardContent className="p-6 space-y-3">
-              <Microscope className="w-8 h-8 text-saffron-700" />
-              <h3 className="font-serif text-base font-bold text-sacred-900">
-                Microscopic Ridge Analysis
-              </h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                High-magnification optical inspection to verify that the thorny projections and facial clefts are organically grown cellular wood, detecting glued or carved alterations.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-sacred-200 bg-white">
-            <CardContent className="p-6 space-y-3">
-              <Award className="w-8 h-8 text-gold-600" />
-              <h3 className="font-serif text-base font-bold text-sacred-900">
-                Density & Caliber Metric
-              </h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Precision digital vernier calipers and analytical micro-balances document exact millimeters and gram weight for unique certificate registry.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Debunking Common Myths */}
-      <section className="space-y-6">
-        <div className="border-b border-sacred-200 pb-3">
-          <h2 className="font-serif text-2xl font-bold text-sacred-900">
-            3. Debunking Traditional Testing Myths
-          </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            Why popular folklore tests like the water-floating or copper coin rotation test are scientifically unreliable.
-          </p>
-        </div>
-
-        <div className="space-y-4">
-          <div className="p-5 rounded-xl bg-white border border-sacred-200 flex items-start gap-4">
-            <XCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <h4 className="font-serif text-sm font-bold text-sacred-950">
-                The Water Floating Myth (Sinking = Real, Floating = Fake)
-              </h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                <strong>Botanical Fact:</strong> An authentic ripe, dry Rudraksha seed containing air within its seed cavities may float on water, while an unripe or dense bead sinks. Unscrupulous manufacturers can also inject lead or heavy resins into fake beads to make them sink. Floating or sinking does NOT scientifically verify Mukhi authenticity.
-              </p>
-            </div>
-          </div>
-
-          <div className="p-5 rounded-xl bg-white border border-sacred-200 flex items-start gap-4">
-            <XCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <h4 className="font-serif text-sm font-bold text-sacred-950">
-                The Copper Coin Rotation Test
-              </h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                <strong>Physical Fact:</strong> Any spherical or ribbed object placed between two flat copper coins will rotate due to subtle hand tremors, uneven friction, and gravitational tilt. It is not an electromagnetic property unique to authentic Rudraksha.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <div className="rounded-2xl bg-sacred-950 text-white p-8 text-center space-y-4 border border-gold-500/30">
-        <h3 className="font-serif text-2xl font-bold">
-          Experience Genuine Himalayan Transparency
-        </h3>
-        <p className="text-xs sm:text-sm text-sacred-300 max-w-xl mx-auto">
-          Explore our certified collection or look up an existing specimen using our live certificate verification tool.
+      <section className="space-y-3">
+        <h2 className="font-serif text-xl font-bold text-sacred-950 flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-saffron-700" />
+          Mukhi descriptions
+        </h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          “Mukhi” is commonly used to describe visible longitudinal divisions on
+          a Rudraksha seed. A visual count or product photograph alone cannot
+          establish a specimen&apos;s identity, origin, or condition.
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-          <Button variant="primary" size="lg" asChild>
-            <Link href="/products">Explore Catalog</Link>
-          </Button>
-          <Button variant="outline" size="lg" className="border-sacred-700 bg-sacred-900 text-white" asChild>
-            <Link href="/certificate-verification">Verify Certificate ID</Link>
-          </Button>
-        </div>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="font-serif text-xl font-bold text-sacred-950 flex items-center gap-2">
+          <FlaskConical className="w-5 h-5 text-saffron-700" />
+          Testing and certificate records
+        </h2>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          Some independent evaluators may use imaging or microscopy as part of
+          an examination. RudraKart does not operate a laboratory, perform these
+          tests, or issue real certificates. Sample records are labeled
+          SAMPLE_DEMO in the lookup.
+        </p>
+      </section>
+
+      <section className="rounded-lg border border-amber-300 bg-amber-50 p-5 space-y-2">
+        <h2 className="font-serif text-lg font-bold text-amber-950 flex items-center gap-2">
+          <AlertTriangle className="w-5 h-5" />
+          About this catalog
+        </h2>
+        <p className="text-sm text-amber-900 leading-relaxed">
+          Product descriptions, origin fields, measurements, stock, and
+          certificate details may be sample values. Do not rely on them as
+          commercial representations or proof of authenticity.
+        </p>
+      </section>
+
+      <div className="flex flex-wrap gap-3">
+        <Button variant="primary" asChild>
+          <Link href="/products">Browse the catalog</Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="/certificate-verification">Look up a sample record</Link>
+        </Button>
       </div>
     </div>
   );

@@ -11,7 +11,6 @@ import {
   RefreshCw,
   Mail,
   Send,
-  MessageCircle,
   Package,
   AlertCircle,
   Sparkles,
@@ -24,9 +23,17 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<Record<string, OrderStatus>>({});
-  const [trackingInputs, setTrackingInputs] = useState<Record<string, string>>({});
-  const [feedback, setFeedback] = useState<{ id: string; message: string; isDuplicate?: boolean } | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<
+    Record<string, OrderStatus>
+  >({});
+  const [trackingInputs, setTrackingInputs] = useState<Record<string, string>>(
+    {},
+  );
+  const [feedback, setFeedback] = useState<{
+    id: string;
+    message: string;
+    isDuplicate?: boolean;
+  } | null>(null);
 
   const loadOrders = async () => {
     setLoading(true);
@@ -75,7 +82,7 @@ export default function AdminOrdersPage() {
           id: orderId,
           message: res.isDuplicate
             ? "Status unchanged. Duplicate notification blocked."
-            : `Order updated to ${newStatus}. Notification dispatched.`,
+            : `Order updated to ${newStatus}.`,
           isDuplicate: res.isDuplicate,
         });
         await loadOrders();
@@ -91,17 +98,6 @@ export default function AdminOrdersPage() {
     }
   };
 
-  const getWhatsAppUrl = (order: any) => {
-    const message = [
-      `Hello ${order.customerName || "there"},`,
-      `Your RudraKart order ${order.orderNumber || order.id} is currently ${order.status}.`,
-      `Order total: ${order.currency || "NPR"} ${order.total?.toLocaleString() || "0"}.`,
-      order.trackingNumber ? `Tracking number: ${order.trackingNumber}.` : "We will keep you updated on the next step.",
-      "Please let us know if you need any assistance.",
-    ].join(" ");
-    return `https://wa.me/9779869624948?text=${encodeURIComponent(message)}`;
-  };
-
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header */}
@@ -111,7 +107,8 @@ export default function AdminOrdersPage() {
             Customer Orders & Shipments
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
-            Fulfillment lifecycle management, status transition triggers, duplicate protection, and automated email dispatches.
+            Fulfillment lifecycle management, status transition triggers,
+            duplicate protection, and automated email dispatches.
           </p>
         </div>
 
@@ -122,7 +119,9 @@ export default function AdminOrdersPage() {
           disabled={loading}
           className="gap-1.5 h-8 text-xs border-sacred-300"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`}
+          />
           Refresh Orders
         </Button>
       </div>
@@ -145,14 +144,20 @@ export default function AdminOrdersPage() {
             </thead>
             <tbody className="divide-y divide-sacred-100">
               {orders.map((order) => {
-                const isSelectedSame = (selectedStatus[order.id] || order.status) === order.status;
+                const isSelectedSame =
+                  (selectedStatus[order.id] || order.status) === order.status;
                 const itemsDisplay =
                   order.items && order.items.length > 0
-                    ? order.items.map((i: any) => i.product?.name || "Sacred Specimen").join(", ")
+                    ? order.items
+                        .map((i: any) => i.product?.name || "Sacred Specimen")
+                        .join(", ")
                     : "Rudraksha Specimen";
 
                 return (
-                  <tr key={order.id} className="hover:bg-sacred-50/50 transition-colors">
+                  <tr
+                    key={order.id}
+                    className="hover:bg-sacred-50/50 transition-colors"
+                  >
                     <td className="p-4 font-mono font-bold text-sacred-950">
                       <span>{order.orderNumber || order.id}</span>
                       <span className="text-[10px] text-muted-foreground block font-sans">
@@ -161,12 +166,21 @@ export default function AdminOrdersPage() {
                     </td>
 
                     <td className="p-4">
-                      <span className="font-bold text-sacred-950 block">{order.customerName}</span>
-                      <span className="text-[11px] text-muted-foreground block">{order.customerEmail}</span>
-                      <span className="text-[10px] text-sacred-700">{order.city || "Nepal"}</span>
+                      <span className="font-bold text-sacred-950 block">
+                        {order.customerName}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground block">
+                        {order.customerEmail}
+                      </span>
+                      <span className="text-[10px] text-sacred-700">
+                        {order.city || "Nepal"}
+                      </span>
                     </td>
 
-                    <td className="p-4 text-sacred-800 max-w-[200px] truncate" title={itemsDisplay}>
+                    <td
+                      className="p-4 text-sacred-800 max-w-[200px] truncate"
+                      title={itemsDisplay}
+                    >
                       {itemsDisplay}
                     </td>
 
@@ -213,7 +227,9 @@ export default function AdminOrdersPage() {
                         {feedback && feedback.id === order.id && (
                           <div
                             className={`text-[10px] font-semibold ${
-                              feedback.isDuplicate ? "text-amber-700" : "text-emerald-700"
+                              feedback.isDuplicate
+                                ? "text-amber-700"
+                                : "text-emerald-700"
                             }`}
                           >
                             {feedback.message}
@@ -253,16 +269,8 @@ export default function AdminOrdersPage() {
                           ) : (
                             <Mail className="w-3 h-3" />
                           )}
-                          {isSelectedSame ? "Current" : "Apply & Send Email"}
+                          {isSelectedSame ? "Current" : "Apply Status"}
                         </Button>
-                        <a
-                          href={getWhatsAppUrl(order)}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="inline-flex h-7 items-center gap-1 rounded-md border border-emerald-300 px-2.5 text-[11px] font-semibold text-emerald-800 hover:bg-emerald-50"
-                        >
-                          <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
-                        </a>
                       </div>
                     </td>
                   </tr>
@@ -270,8 +278,13 @@ export default function AdminOrdersPage() {
               })}
               {orders.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="p-10 text-center text-muted-foreground text-xs">
-                    No customer orders recorded in database yet. Orders placed during checkout will appear here with live lifecycle and tracking controls.
+                  <td
+                    colSpan={7}
+                    className="p-10 text-center text-muted-foreground text-xs"
+                  >
+                    No customer orders recorded in database yet. Orders placed
+                    during checkout will appear here with live lifecycle and
+                    tracking controls.
                   </td>
                 </tr>
               )}

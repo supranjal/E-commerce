@@ -1,12 +1,11 @@
 import Link from "next/link";
-import { Boxes, AlertTriangle, CheckCircle2, RefreshCw } from "lucide-react";
-import { getProducts } from "@/actions/product-actions";
-import { Button } from "@/components/ui/button";
+import { AlertTriangle, CheckCircle2 } from "lucide-react";
+import { getAdminCatalog } from "@/actions/product-actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminInventoryPage() {
-  const products = await getProducts();
+  const { products } = await getAdminCatalog();
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -16,13 +15,17 @@ export default async function AdminInventoryPage() {
             Inventory Stock Controller
           </h1>
           <p className="text-xs text-muted-foreground">
-            Monitor real-time warehouse stock levels, low-threshold alerts, and stock adjustments.
+            Current database stock levels and low-stock alerts. Stock edits are
+            managed with product details.
           </p>
         </div>
 
-        <Button variant="outline" size="sm" className="gap-1.5 self-start sm:self-auto">
-          <RefreshCw className="w-3.5 h-3.5" /> Refresh Quantities
-        </Button>
+        <Link
+          href="/admin/products"
+          className="text-xs font-semibold text-saffron-800 hover:underline"
+        >
+          Manage product stock
+        </Link>
       </div>
 
       <div className="bg-white rounded-2xl border border-sacred-200 shadow-xs overflow-hidden">
@@ -39,7 +42,10 @@ export default async function AdminInventoryPage() {
             </thead>
             <tbody className="divide-y divide-sacred-100">
               {products.map((p) => (
-                <tr key={p.id} className="hover:bg-sacred-50/50 transition-colors">
+                <tr
+                  key={p.id}
+                  className="hover:bg-sacred-50/50 transition-colors"
+                >
                   <td className="p-4">
                     <span className="font-serif font-bold text-sacred-950 block">
                       {p.name}

@@ -1,8 +1,29 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { isAdmin } from "@/lib/auth";
 import { MOCK_PRODUCTS, MOCK_CATEGORIES } from "@/lib/mock-data";
 import { ProductItem } from "@/types";
+
+function excludeDemoVerification(product: ProductItem): ProductItem {
+  const certificates = product.certificates?.map((certificate) => {
+    const isDemo =
+      certificate.certificateNumber.startsWith("RK-DEMO-") ||
+      certificate.laboratory.toLowerCase().includes("demo");
+    return isDemo
+      ? { ...certificate, verificationStatus: "SAMPLE_DEMO" as const }
+      : certificate;
+  });
+  const hasVerifiedCertificate = certificates?.some(
+    (certificate) => certificate.verificationStatus === "VERIFIED",
+  );
+
+  return {
+    ...product,
+    isCertified: product.isCertified && Boolean(hasVerifiedCertificate),
+    certificates,
+  };
+}
 
 export async function getProducts(options?: {
   categorySlug?: string;
@@ -62,9 +83,7 @@ export async function getProducts(options?: {
       },
     });
 
-    if (products && products.length > 0) {
-      return products as unknown as ProductItem[];
-    }
+    return (products as unknown as ProductItem[]).map(excludeDemoVerification);
   } catch (error) {
     // Database not connected yet, gracefully use in-memory seed catalog
   }
@@ -73,7 +92,9 @@ export async function getProducts(options?: {
   let filtered = [...MOCK_PRODUCTS];
 
   if (options?.categorySlug) {
-    filtered = filtered.filter((p) => p.category?.slug === options.categorySlug);
+    filtered = filtered.filter(
+      (p) => p.category?.slug === options.categorySlug,
+    );
   }
 
   if (options?.mukhi !== undefined && options.mukhi !== null) {
@@ -86,7 +107,7 @@ export async function getProducts(options?: {
 
   if (options?.origin) {
     filtered = filtered.filter((p) =>
-      p.origin.toLowerCase().includes(options.origin!.toLowerCase())
+      p.origin.toLowerCase().includes(options.origin!.toLowerCase()),
     );
   }
 
@@ -104,7 +125,7 @@ export async function getProducts(options?: {
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.description.toLowerCase().includes(q) ||
-        p.origin.toLowerCase().includes(q)
+        p.origin.toLowerCase().includes(q),
     );
   }
 
@@ -116,10 +137,12 @@ export async function getProducts(options?: {
     filtered.sort((a, b) => a.name.localeCompare(b.name));
   }
 
-  return filtered;
+  return filtered.map(excludeDemoVerification);
 }
 
-export async function getProductBySlug(slug: string): Promise<ProductItem | null> {
+export async function getProductBySlug(
+  slug: string,
+): Promise<ProductItem | null> {
   try {
     const product = await prisma.product.findUnique({
       where: { slug },
@@ -130,13 +153,15 @@ export async function getProductBySlug(slug: string): Promise<ProductItem | null
       },
     });
 
-    if (product) return product as unknown as ProductItem;
+    return product
+      ? excludeDemoVerification(product as unknown as ProductItem)
+      : null;
   } catch (error) {
     // Database not connected yet, fallback to seed
   }
 
   const found = MOCK_PRODUCTS.find((p) => p.slug === slug);
-  return found || null;
+  return found ? excludeDemoVerification(found) : null;
 }
 
 export async function getCategories() {
@@ -145,7 +170,7 @@ export async function getCategories() {
       orderBy: { name: "asc" },
       include: { _count: { select: { products: true } } },
     });
-    if (categories && categories.length > 0) return categories;
+    return categories;
   } catch (error) {
     // Database not connected yet, fallback to seed
   }
@@ -156,6 +181,46 @@ export async function getCategories() {
       products: MOCK_PRODUCTS.filter((p) => p.categoryId === c.id).length,
     },
   }));
+}
+
+export async function getAdminCatalog() {
+  if (!(await isAdmin())) {
+    return {
+      success: false,
+      products: [],
+      categories: [],
+      error: "Admin access required.",
+    };
+  }
+
+  try {
+    const [products, categories] = await Promise.all([
+      prisma.product.findMany({
+        orderBy: { createdAt: "desc" },
+        include: {
+          category: true,
+          images: { orderBy: { sortOrder: "asc" } },
+          certificates: true,
+        },
+      }),
+      prisma.category.findMany({ orderBy: { name: "asc" } }),
+    ]);
+
+    return {
+      success: true,
+      products: (products as unknown as ProductItem[]).map(
+        excludeDemoVerification,
+      ),
+      categories,
+    };
+  } catch {
+    return {
+      success: false,
+      products: [],
+      categories: [],
+      error: "Admin catalog could not be loaded from the database.",
+    };
+  }
 }
 
 export interface CreateProductInput {
@@ -176,13 +241,23 @@ export interface CreateProductInput {
 }
 
 export async function createProductAction(input: CreateProductInput) {
+  if (!(await isAdmin())) {
+    return { success: false, error: "Admin access required." };
+  }
+
   try {
     if (!input.name || input.name.trim().length < 3) {
-      return { success: false, error: "Product name must be at least 3 characters." };
+      return {
+        success: false,
+        error: "Product name must be at least 3 characters.",
+      };
     }
     const price = Number(input.price);
     if (isNaN(price) || price <= 0) {
-      return { success: false, error: "Price must be a valid positive amount." };
+      return {
+        success: false,
+        error: "Price must be a valid positive amount.",
+      };
     }
     const stock = Number(input.stock);
     if (isNaN(stock) || stock < 0) {
@@ -203,7 +278,9 @@ export async function createProductAction(input: CreateProductInput) {
       data: {
         name: input.name.trim(),
         slug,
-        description: input.description?.trim() || "Authentic Himalayan Rudraksha specimen.",
+        description:
+          input.description?.trim() ||
+          "Academic demo catalog listing; product details have not been independently verified.",
         price,
         stock,
         mukhi: input.mukhi ? Number(input.mukhi) : null,
@@ -213,7 +290,7 @@ export async function createProductAction(input: CreateProductInput) {
         weight: input.weight || "3.50 grams",
         shape: input.isSpecial ? "Naturally Conjoined" : "Natural Oval",
         featured: Boolean(input.featured),
-        isCertified: Boolean(input.isCertified),
+        isCertified: false,
         categoryId: input.categoryId,
         images: input.imageUrl
           ? {
@@ -237,7 +314,10 @@ export async function createProductAction(input: CreateProductInput) {
     return { success: true, product: newProduct };
   } catch (error: any) {
     console.error("Failed to create product:", error);
-    return { success: false, error: error.message || "Could not create product." };
+    return {
+      success: false,
+      error: error.message || "Could not create product.",
+    };
   }
 }
 
@@ -252,16 +332,24 @@ export interface UpdateProductInput {
   categoryId: string;
   featured?: boolean;
   isCertified?: boolean;
+  imageUrl?: string;
 }
 
 export async function updateProductAction(input: UpdateProductInput) {
+  if (!(await isAdmin())) {
+    return { success: false, error: "Admin access required." };
+  }
+
   try {
     if (!input.id) {
       return { success: false, error: "Product ID is required for updating." };
     }
     const price = Number(input.price);
     if (isNaN(price) || price <= 0) {
-      return { success: false, error: "Price must be a valid positive amount." };
+      return {
+        success: false,
+        error: "Price must be a valid positive amount.",
+      };
     }
     const stock = Number(input.stock);
     if (isNaN(stock) || stock < 0) {
@@ -279,7 +367,26 @@ export async function updateProductAction(input: UpdateProductInput) {
         origin: input.origin.trim(),
         categoryId: input.categoryId,
         featured: Boolean(input.featured),
-        isCertified: Boolean(input.isCertified),
+        isCertified: false,
+        ...(input.imageUrl !== undefined
+          ? {
+              images: {
+                deleteMany: {},
+                ...(input.imageUrl.trim()
+                  ? {
+                      create: [
+                        {
+                          url: input.imageUrl.trim(),
+                          altText: input.name.trim(),
+                          isPrimary: true,
+                          sortOrder: 0,
+                        },
+                      ],
+                    }
+                  : {}),
+              },
+            }
+          : {}),
       },
       include: {
         category: true,
@@ -290,11 +397,18 @@ export async function updateProductAction(input: UpdateProductInput) {
     return { success: true, product: updated };
   } catch (error: any) {
     console.error("Failed to update product:", error);
-    return { success: false, error: error.message || "Could not update product." };
+    return {
+      success: false,
+      error: error.message || "Could not update product.",
+    };
   }
 }
 
 export async function deleteProductAction(id: string) {
+  if (!(await isAdmin())) {
+    return { success: false, error: "Admin access required." };
+  }
+
   try {
     if (!id) return { success: false, error: "Invalid product ID." };
 
@@ -311,7 +425,8 @@ export async function deleteProductAction(id: string) {
       });
       return {
         success: true,
-        message: "Specimen is linked to existing customer orders. It has been deactivated and stock set to 0 instead of breaking historical transaction integrity.",
+        message:
+          "Specimen is linked to existing customer orders. It has been deactivated and stock set to 0 instead of breaking historical transaction integrity.",
       };
     }
 
@@ -322,9 +437,15 @@ export async function deleteProductAction(id: string) {
     await prisma.review.deleteMany({ where: { productId: id } });
     await prisma.product.delete({ where: { id } });
 
-    return { success: true, message: "Product deleted successfully from catalog." };
+    return {
+      success: true,
+      message: "Product deleted successfully from catalog.",
+    };
   } catch (error: any) {
     console.error("Failed to delete product:", error);
-    return { success: false, error: error.message || "Could not delete product." };
+    return {
+      success: false,
+      error: error.message || "Could not delete product.",
+    };
   }
 }

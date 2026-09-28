@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { ShieldCheck, Sparkles, Award, MapPin, Mail, Phone } from "lucide-react";
+import {
+  ShieldCheck,
+  Sparkles,
+  Award,
+  MapPin,
+  Mail,
+  Phone,
+} from "lucide-react";
 
 export function Footer() {
   return (
@@ -17,15 +24,18 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-xs text-sacred-300 leading-relaxed max-w-sm">
-              Dedicated to preserving botanical integrity and sacred Himalayan traditions. Every Mukhi is individually verified, radiologically scanned, and certified with complete transparency.
+              RudraKart is an academic e-commerce demonstration. Sample product
+              and certificate data are not independent authenticity or
+              laboratory claims.
             </p>
             <div className="flex items-center gap-3 pt-2 text-xs text-gold-400 font-semibold">
               <span className="flex items-center gap-1">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" /> 100% Genuine Origin
+                <ShieldCheck className="w-4 h-4 text-emerald-400" /> Demo
+                Catalog
               </span>
               <span>•</span>
               <span className="flex items-center gap-1">
-                <Award className="w-4 h-4 text-gold-400" /> Lab Certified
+                <Award className="w-4 h-4 text-gold-400" /> Sample Records
               </span>
             </div>
           </div>
@@ -37,27 +47,42 @@ export function Footer() {
             </h4>
             <ul className="space-y-2 text-xs text-sacred-300">
               <li>
-                <Link href="/rudraksha/1-mukhi" className="hover:text-saffron-400 transition-colors">
-                  1 Mukhi Savar Rudraksha
+                <Link
+                  href="/rudraksha/1-mukhi"
+                  className="hover:text-saffron-400 transition-colors"
+                >
+                  1 Mukhi Chandrakar Rudraksha
                 </Link>
               </li>
               <li>
-                <Link href="/rudraksha/5-mukhi" className="hover:text-saffron-400 transition-colors">
+                <Link
+                  href="/rudraksha/5-mukhi"
+                  className="hover:text-saffron-400 transition-colors"
+                >
                   5 Mukhi Kalagni Rudraksha
                 </Link>
               </li>
               <li>
-                <Link href="/rudraksha/7-mukhi" className="hover:text-saffron-400 transition-colors">
+                <Link
+                  href="/rudraksha/7-mukhi"
+                  className="hover:text-saffron-400 transition-colors"
+                >
                   7 Mukhi Mahalakshmi
                 </Link>
               </li>
               <li>
-                <Link href="/rudraksha/14-mukhi" className="hover:text-saffron-400 transition-colors">
+                <Link
+                  href="/rudraksha/14-mukhi"
+                  className="hover:text-saffron-400 transition-colors"
+                >
                   14 Mukhi Devamani
                 </Link>
               </li>
               <li>
-                <Link href="/rudraksha/gauri-shankar" className="hover:text-saffron-400 transition-colors">
+                <Link
+                  href="/rudraksha/gauri-shankar"
+                  className="hover:text-saffron-400 transition-colors"
+                >
                   Gauri Shankar Sacred Pair
                 </Link>
               </li>
@@ -71,23 +96,35 @@ export function Footer() {
             </h4>
             <ul className="space-y-2 text-xs text-sacred-300">
               <li>
-                <Link href="/certificate-verification" className="text-gold-400 font-semibold hover:text-gold-300 transition-colors">
+                <Link
+                  href="/certificate-verification"
+                  className="text-gold-400 font-semibold hover:text-gold-300 transition-colors"
+                >
                   Verify Certificate ID
                 </Link>
               </li>
               <li>
-                <Link href="/authenticity" className="hover:text-saffron-400 transition-colors">
-                  Laboratory Testing Standards
+                <Link
+                  href="/authenticity"
+                  className="hover:text-saffron-400 transition-colors"
+                >
+                  Rudraksha Information
                 </Link>
               </li>
               <li>
-                <Link href="/authenticity" className="hover:text-saffron-400 transition-colors">
-                  Nepali vs. Fake Identification
+                <Link
+                  href="/authenticity"
+                  className="hover:text-saffron-400 transition-colors"
+                >
+                  Sample Data Notice
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-saffron-400 transition-colors">
-                  Himalayan Sourcing Ethics
+                <Link
+                  href="/about"
+                  className="hover:text-saffron-400 transition-colors"
+                >
+                  About the Project
                 </Link>
               </li>
             </ul>
@@ -100,7 +137,8 @@ export function Footer() {
             </h4>
             <div className="space-y-2 text-xs text-sacred-300">
               <p className="text-[11px] text-sacred-400 leading-relaxed">
-                BSc CSIT 6th Semester E-Commerce Architecture Demonstration Project.
+                BSc CSIT 6th Semester E-Commerce Architecture Demonstration
+                Project.
               </p>
               <div className="flex items-center gap-2 text-sacred-300 pt-1">
                 <MapPin className="w-3.5 h-3.5 text-saffron-500 flex-shrink-0" />
@@ -116,16 +154,13 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-sacred-400">
-          <p>© 2026 RudraKart. Built for BSc CSIT 6th Semester. All demo rights reserved.</p>
+          <p>
+            © 2026 RudraKart. Built for BSc CSIT 6th Semester. All demo rights
+            reserved.
+          </p>
           <div className="flex items-center gap-3">
             <span className="px-2 py-1 rounded bg-sacred-900 border border-sacred-800 text-[10px] text-sacred-300">
-              Demo eSewa
-            </span>
-            <span className="px-2 py-1 rounded bg-sacred-900 border border-sacred-800 text-[10px] text-sacred-300">
-              Demo Khalti
-            </span>
-            <span className="px-2 py-1 rounded bg-sacred-900 border border-sacred-800 text-[10px] text-sacred-300">
-              Demo Stripe Card
+              Cash on Delivery
             </span>
           </div>
         </div>

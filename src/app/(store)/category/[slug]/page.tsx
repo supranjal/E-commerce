@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getProducts, getCategories } from "@/actions/product-actions";
 import { ProductCard } from "@/components/storefront/ProductCard";
@@ -10,6 +11,26 @@ export const dynamic = "force-dynamic";
 interface CategoryPageProps {
   params: {
     slug: string;
+  };
+}
+
+export async function generateMetadata({
+  params,
+}: CategoryPageProps): Promise<Metadata> {
+  const category = (await getCategories()).find(
+    (item) => item.slug === params.slug,
+  );
+  if (!category)
+    return {
+      title: "Category Not Found",
+      robots: { index: false, follow: false },
+    };
+  return {
+    title: category.name,
+    description:
+      category.description ||
+      `Browse ${category.name} in the RudraKart catalog.`,
+    alternates: { canonical: `/category/${category.slug}` },
   };
 }
 

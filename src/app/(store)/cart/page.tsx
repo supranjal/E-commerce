@@ -8,8 +8,6 @@ import {
   Plus,
   Minus,
   ArrowRight,
-  ShieldCheck,
-  Award,
   ArrowLeft,
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
@@ -28,8 +26,7 @@ export default function CartPage() {
   } = useCartStore();
 
   const subtotal = getSubtotal();
-  const shipping = 0; // Free certified express shipping
-  const total = subtotal + shipping;
+  const total = subtotal;
 
   if (items.length === 0) {
     return (
@@ -42,7 +39,8 @@ export default function CartPage() {
             Your Sacred Cart is Empty
           </h1>
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            You have not added any sacred Rudraksha beads or accessories yet. Explore our verified collection from eastern Nepal.
+            You have not added any products yet. Browse the catalog to get
+            started.
           </p>
         </div>
         <Button variant="primary" size="lg" asChild>
@@ -62,7 +60,7 @@ export default function CartPage() {
             Shopping Cart ({items.reduce((s, i) => s + i.quantity, 0)} items)
           </h1>
           <p className="text-xs text-muted-foreground">
-            Review your selected certified Rudraksha items before proceeding to checkout.
+            Review your selected products and quantities before checkout.
           </p>
         </div>
         <button
@@ -77,7 +75,7 @@ export default function CartPage() {
         {/* Items List */}
         <div className="lg:col-span-8 space-y-4">
           {items.map(({ product, quantity }) => {
-                  const img = getProductImageUrl(product);
+            const img = getProductImageUrl(product);
 
             return (
               <div
@@ -130,6 +128,7 @@ export default function CartPage() {
                     <button
                       onClick={() => updateQuantity(product.id, quantity + 1)}
                       className="p-1.5 text-sacred-700 hover:text-sacred-950 hover:bg-sacred-100 rounded-r-lg"
+                      disabled={quantity >= product.stock}
                     >
                       <Plus className="w-3.5 h-3.5" />
                     </button>
@@ -176,16 +175,6 @@ export default function CartPage() {
               </span>
             </div>
 
-            <div className="flex justify-between text-muted-foreground">
-              <span>Certified Express Delivery</span>
-              <span className="font-semibold text-emerald-700">FREE</span>
-            </div>
-
-            <div className="flex justify-between text-muted-foreground">
-              <span>Authenticity Verification Certificate</span>
-              <span className="font-semibold text-emerald-700">INCLUDED</span>
-            </div>
-
             <div className="pt-3 border-t border-sacred-200 flex justify-between items-baseline">
               <span className="font-serif text-base font-bold text-sacred-950">
                 Total Amount
@@ -196,23 +185,16 @@ export default function CartPage() {
             </div>
           </div>
 
-          <Button variant="primary" size="lg" className="w-full gap-2 shadow-md" asChild>
+          <Button
+            variant="primary"
+            size="lg"
+            className="w-full gap-2 shadow-md"
+            asChild
+          >
             <Link href="/checkout">
               Proceed to Checkout <ArrowRight className="w-4 h-4" />
             </Link>
           </Button>
-
-          {/* Guarantees */}
-          <div className="pt-4 border-t border-sacred-100 space-y-2 text-[11px] text-muted-foreground">
-            <div className="flex items-center gap-2 text-sacred-800 font-medium">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-              <span>100% Genuine Himalayan Origin Guarantee</span>
-            </div>
-            <div className="flex items-center gap-2 text-sacred-800 font-medium">
-              <Award className="w-4 h-4 text-gold-600 flex-shrink-0" />
-              <span>Laboratory Verification Serial ID Included</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

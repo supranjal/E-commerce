@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ShoppingBag, Zap, Plus, Minus, Check, ShieldCheck } from "lucide-react";
+import {
+  ShoppingBag,
+  Zap,
+  Plus,
+  Minus,
+  Check,
+  ShieldCheck,
+} from "lucide-react";
 import { ProductItem } from "@/types";
 import { useCartStore } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/utils";
@@ -16,16 +23,34 @@ export function ProductDetailActions({ product }: ProductDetailActionsProps) {
   const router = useRouter();
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
-  const { addItem, currency, usdRate } = useCartStore();
+  const [cartError, setCartError] = useState("");
+  const { addItem, items, currency, usdRate } = useCartStore();
+  const alreadyInCart =
+    items.find((item) => item.product.id === product.id)?.quantity || 0;
 
   const handleAddToCart = () => {
-    addItem(product, quantity);
+    if (alreadyInCart + quantity > product.stock) {
+      setCartError("Your cart already contains the available stock.");
+      return;
+    }
+    if (!addItem(product, quantity)) {
+      setCartError("The available stock limit has been reached.");
+      return;
+    }
+    setCartError("");
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
 
   const handleBuyNow = () => {
-    addItem(product, quantity);
+    if (alreadyInCart + quantity > product.stock) {
+      setCartError("Your cart already contains the available stock.");
+      return;
+    }
+    if (!addItem(product, quantity)) {
+      setCartError("The available stock limit has been reached.");
+      return;
+    }
     router.push("/checkout");
   };
 
@@ -34,7 +59,7 @@ export function ProductDetailActions({ product }: ProductDetailActionsProps) {
       {/* Price Display */}
       <div className="space-y-1">
         <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-          Price (Inclusive of all lab testing & taxes)
+          Price per item
         </span>
         <div className="text-3xl sm:text-4xl font-serif font-bold text-sacred-950">
           {formatPrice(product.price, currency, usdRate)}
@@ -46,7 +71,7 @@ export function ProductDetailActions({ product }: ProductDetailActionsProps) {
         {product.stock > 0 ? (
           <span className="inline-flex items-center gap-1.5 font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            In Stock ({product.stock} unique {product.stock === 1 ? "specimen" : "specimens"} available)
+            In Stock ({product.stock} available)
           </span>
         ) : (
           <span className="font-semibold text-red-700 bg-red-50 px-2.5 py-1 rounded-md border border-red-200">
@@ -69,9 +94,9 @@ export function ProductDetailActions({ product }: ProductDetailActionsProps) {
             {quantity}
           </span>
           <button
-            onClick={() => setQuantity((q) => Math.min(product.stock || 10, q + 1))}
+            onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
             className="p-2 text-sacred-700 hover:text-sacred-950 hover:bg-sacred-100 rounded-md transition-colors"
-            disabled={quantity >= (product.stock || 10)}
+            disabled={quantity >= product.stock}
           >
             <Plus className="w-4 h-4" />
           </button>
@@ -105,6 +130,11 @@ export function ProductDetailActions({ product }: ProductDetailActionsProps) {
           <Zap className="w-4 h-4 text-gold-400" /> Buy Now
         </Button>
       </div>
+      {cartError && (
+        <p role="alert" className="text-xs text-red-700">
+          {cartError}
+        </p>
+      )}
     </div>
   );
 }
