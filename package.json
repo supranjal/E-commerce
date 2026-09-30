@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "node scripts/init-dev.js && next dev",
     "dev:https": "node scripts/dev-https.js",
+    "prebuild": "node scripts/prebuild.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

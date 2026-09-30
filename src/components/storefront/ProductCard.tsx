@@ -45,17 +45,14 @@ export function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {product.isCertified &&
-          product.certificates?.some(
-            (certificate) => certificate.verificationStatus === "VERIFIED",
-          ) && (
-            <div className="absolute top-3 right-3 z-10">
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-950/90 text-emerald-300 border border-emerald-500/50 shadow-sm backdrop-blur">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                Certified
-              </span>
-            </div>
-          )}
+        {(product.isCertified || (product.certificates && product.certificates.length > 0)) && (
+          <div className="absolute top-3 right-3 z-10">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-950/90 text-emerald-300 border border-emerald-500/50 shadow-sm backdrop-blur">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              Certified
+            </span>
+          </div>
+        )}
 
         {/* Quick View Link */}
         <Link
@@ -70,11 +67,15 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-xs">
             <span className="font-bold text-saffron-800">{product.origin}</span>
-            {product.size && (
+            {product.certificates?.[0]?.certificateNumber ? (
+              <span className="font-mono text-[10px] text-muted-foreground bg-sacred-100/80 px-1.5 py-0.5 rounded border border-sacred-200">
+                {product.certificates[0].certificateNumber}
+              </span>
+            ) : product.size ? (
               <span className="font-semibold text-stone-600">
                 {product.size}
               </span>
-            )}
+            ) : null}
           </div>
 
           <Link href={`/products/${product.slug}`} className="block">

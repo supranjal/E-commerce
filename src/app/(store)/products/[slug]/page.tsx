@@ -12,6 +12,7 @@ import {
   Maximize2,
   FileCheck2,
   ArrowLeft,
+  ArrowRight,
   Star,
 } from "lucide-react";
 import { getProductBySlug } from "@/actions/product-actions";
@@ -77,6 +78,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
 
   const recommendations = await getRecommendationsForProduct(product);
   const primaryImage = getProductImageUrl(product);
+  const primaryCertificate = product.certificates?.[0];
+  const certificateId = primaryCertificate?.certificateNumber;
   const productUrl = `${baseUrl}/products/${product.slug}`;
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -179,17 +182,14 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               )}
             </div>
 
-            {product.isCertified &&
-              product.certificates?.some(
-                (certificate) => certificate.verificationStatus === "VERIFIED",
-              ) && (
-                <div className="absolute top-4 right-4">
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white/95 text-emerald-800 border border-emerald-300 shadow">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    Lab Certified
-                  </span>
-                </div>
-              )}
+            {(product.isCertified || (product.certificates && product.certificates.length > 0)) && (
+              <div className="absolute top-4 right-4">
+                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white/95 text-emerald-800 border border-emerald-300 shadow">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  Lab Certified
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Sourcing guarantee small card */}
@@ -295,30 +295,74 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                   Elaeocarpus ganitrus Roxb.
                 </span>
               </div>
+              {certificateId && (
+                <div className="grid grid-cols-2 px-4 py-2.5 bg-gold-50/50 items-center">
+                  <span className="text-sacred-950 font-semibold flex items-center gap-1.5">
+                    <Award className="w-3.5 h-3.5 text-gold-700 flex-shrink-0" />
+                    Certificate ID
+                  </span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono font-bold text-saffron-900 tracking-wide text-xs">
+                      {certificateId}
+                    </span>
+                    <Link
+                      href={`/certificate-verification?id=${encodeURIComponent(certificateId)}`}
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-saffron-700 hover:text-saffron-950 bg-white px-2 py-0.5 rounded border border-gold-300 hover:border-saffron-500 shadow-2xs transition-all"
+                      title={`Verify certificate ${certificateId}`}
+                    >
+                      <span>Verify ID</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Certificate Action If Certified */}
-          {product.certificates && product.certificates.length > 0 && (
-            <div className="p-4 rounded-xl bg-gold-50/70 border border-gold-300 space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Award className="w-5 h-5 text-gold-700" />
+          {primaryCertificate && (
+            <div className="p-4 sm:p-5 rounded-xl bg-gold-50/80 border-2 border-gold-300 shadow-xs space-y-3.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gold-100 border border-gold-300 flex items-center justify-center flex-shrink-0 text-gold-700">
+                    <Award className="w-5 h-5" />
+                  </div>
                   <div>
-                    <h4 className="font-serif text-sm font-bold text-sacred-900">
-                      Certificate Record
-                    </h4>
-                    <p className="text-xs text-muted-foreground">
-                      Ref ID: {product.certificates[0].certificateNumber}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-serif text-sm font-bold text-sacred-950">
+                        Certificate of Authenticity
+                      </h4>
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                        Verified Lab Record
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 mt-1 text-xs">
+                      <span className="text-muted-foreground">Certificate ID:</span>
+                      <span className="font-mono font-bold text-saffron-900 bg-white/90 px-2 py-0.5 rounded border border-gold-300 text-xs">
+                        {primaryCertificate.certificateNumber}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <CertificateModal
-                certificate={product.certificates[0]}
-                productName={product.name}
-              />
+              {/* Action Buttons: Direct Verification Link + Modal View */}
+              <div className="flex flex-wrap items-center gap-2.5 pt-2 border-t border-gold-200">
+                <Link
+                  href={`/certificate-verification?id=${encodeURIComponent(primaryCertificate.certificateNumber)}`}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-saffron-700 hover:bg-saffron-800 text-white text-xs font-semibold shadow-xs transition-colors"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Verify Certificate in Registry</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+
+                <CertificateModal
+                  certificate={primaryCertificate}
+                  productName={product.name}
+                />
+              </div>
             </div>
           )}
 

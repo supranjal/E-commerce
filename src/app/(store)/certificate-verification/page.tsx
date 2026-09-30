@@ -44,6 +44,7 @@ export default async function CertificateVerificationPage({
   const sampleIds = [
     "RK-DEMO-00001",
     "RK-DEMO-00002",
+    "RK-DEMO-00003",
     "RK-DEMO-00005",
     "RK-DEMO-00007",
     "RK-DEMO-00014",
@@ -72,6 +73,26 @@ export default async function CertificateVerificationPage({
 
       {/* Search Form */}
       <div className="bg-white p-6 sm:p-8 rounded-2xl border-2 border-sacred-200 shadow-md space-y-4">
+        {queryId && (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-saffron-50/90 border border-saffron-200 text-xs">
+            <div className="flex items-center gap-2 text-saffron-950 font-medium">
+              <ShieldCheck className="w-4 h-4 text-saffron-700 flex-shrink-0" />
+              <span>
+                Auto-filled Certificate ID from product:{" "}
+                <span className="font-mono font-bold text-saffron-900 bg-white px-2 py-0.5 rounded border border-saffron-300">
+                  {queryId}
+                </span>
+              </span>
+            </div>
+            <Link
+              href="/certificate-verification"
+              className="text-xs font-semibold text-saffron-800 hover:text-saffron-950 underline underline-offset-2 transition-colors self-end sm:self-auto"
+            >
+              Clear & enter another ID
+            </Link>
+          </div>
+        )}
+
         <form
           action="/certificate-verification"
           method="GET"
@@ -80,6 +101,7 @@ export default async function CertificateVerificationPage({
           <div className="relative flex-1">
             <Search className="absolute left-3.5 top-3.5 w-5 h-5 text-muted-foreground" />
             <input
+              key={queryId}
               type="text"
               name="id"
               defaultValue={queryId}

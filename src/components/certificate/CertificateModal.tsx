@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ShieldCheck, Award, X, FileText, CheckCircle2, AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { ShieldCheck, Award, X, FileText, CheckCircle2, AlertCircle, ArrowRight } from "lucide-react";
 import { CertificateItem } from "@/types";
 import { Button } from "@/components/ui/button";
 
@@ -110,6 +111,20 @@ export function CertificateModal({
 
             <div className="text-[11px] text-emerald-800 text-center font-medium bg-emerald-50/70 p-2 rounded border border-emerald-200">
               * Verified botanical and radiograph dataset recorded by RudraKart Gem & Botanical Laboratory.
+            </div>
+
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-sacred-200">
+              <span className="text-xs text-muted-foreground">
+                Certificate ID: <strong className="font-mono text-sacred-950 font-bold">{certificate.certificateNumber}</strong>
+              </span>
+              <Link
+                href={`/certificate-verification?id=${encodeURIComponent(certificate.certificateNumber)}`}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-saffron-700 hover:bg-saffron-800 text-white text-xs font-semibold shadow-xs transition-colors w-full sm:w-auto justify-center"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Verify in Official Registry</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
           </div>
         </div>

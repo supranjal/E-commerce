@@ -71,6 +71,34 @@ export const MOCK_CERTIFICATES: CertificateItem[] = [
     verificationStatus: "VERIFIED",
   },
   {
+    id: "cert-3",
+    productId: "prod-3",
+    certificateNumber: "RK-DEMO-00003",
+    mukhi: 3,
+    origin: "Nepal (Dingla)",
+    dimensions: "18.5 x 18.0 mm",
+    weightGrams: 2.95,
+    inspectionDate: new Date("2026-02-18"),
+    laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
+    xrayStatus: "Three triangular symmetrical seed chambers confirmed",
+    microscopicCheck: "Original woody endocarp with intact thorny spines",
+    verificationStatus: "VERIFIED",
+  },
+  {
+    id: "cert-4",
+    productId: "prod-4",
+    certificateNumber: "RK-DEMO-00004",
+    mukhi: 4,
+    origin: "Nepal (Sankhuwasabha)",
+    dimensions: "19.0 x 19.1 mm",
+    weightGrams: 3.1,
+    inspectionDate: new Date("2026-02-25"),
+    laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
+    xrayStatus: "Four distinct internal compartments observed",
+    microscopicCheck: "No artificial line incision or filler adhesive present",
+    verificationStatus: "VERIFIED",
+  },
+  {
     id: "cert-5",
     productId: "prod-5",
     certificateNumber: "RK-DEMO-00005",
@@ -86,6 +114,20 @@ export const MOCK_CERTIFICATES: CertificateItem[] = [
     verificationStatus: "VERIFIED",
   },
   {
+    id: "cert-6",
+    productId: "prod-6",
+    certificateNumber: "RK-DEMO-00006",
+    mukhi: 6,
+    origin: "Nepal (Sankhuwasabha)",
+    dimensions: "20.5 x 20.2 mm",
+    weightGrams: 3.4,
+    inspectionDate: new Date("2026-03-08"),
+    laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
+    xrayStatus: "Six hexagonal internal chambers verified",
+    microscopicCheck: "Natural surface grooves without artificial carving",
+    verificationStatus: "VERIFIED",
+  },
+  {
     id: "cert-7",
     productId: "prod-7",
     certificateNumber: "RK-DEMO-00007",
@@ -98,6 +140,48 @@ export const MOCK_CERTIFICATES: CertificateItem[] = [
     xrayStatus: "Seven symmetrical internal seed cavities observed",
     microscopicCheck:
       "Pristine natural ridges; unbleached chemical-free surface",
+    verificationStatus: "VERIFIED",
+  },
+  {
+    id: "cert-8",
+    productId: "prod-8",
+    certificateNumber: "RK-DEMO-00008",
+    mukhi: 8,
+    origin: "Nepal (Dingla)",
+    dimensions: "21.5 x 21.0 mm",
+    weightGrams: 3.65,
+    inspectionDate: new Date("2026-03-15"),
+    laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
+    xrayStatus: "Eight radial internal seed locules confirmed",
+    microscopicCheck: "Continuous natural ridges from apical to basal pores",
+    verificationStatus: "VERIFIED",
+  },
+  {
+    id: "cert-9",
+    productId: "prod-9",
+    certificateNumber: "RK-DEMO-00009",
+    mukhi: 9,
+    origin: "Nepal (Sankhuwasabha)",
+    dimensions: "22.8 x 22.5 mm",
+    weightGrams: 3.9,
+    inspectionDate: new Date("2026-03-16"),
+    laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
+    xrayStatus: "Nine natural internal seed chambers clearly visualized",
+    microscopicCheck: "Authentic high-grade natural endocarp; zero tampering",
+    verificationStatus: "VERIFIED",
+  },
+  {
+    id: "cert-10",
+    productId: "prod-10",
+    certificateNumber: "RK-DEMO-00010",
+    mukhi: 10,
+    origin: "Nepal (Sankhuwasabha)",
+    dimensions: "23.5 x 23.2 mm",
+    weightGrams: 4.15,
+    inspectionDate: new Date("2026-03-17"),
+    laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
+    xrayStatus: "Ten internal seed locules confirmed on cross-sectional scan",
+    microscopicCheck: "Unbroken natural Mukhi fissures; verified botanical specimen",
     verificationStatus: "VERIFIED",
   },
   {
@@ -132,9 +216,25 @@ export const MOCK_CERTIFICATES: CertificateItem[] = [
       "Natural organic joint with continuous woody fiber network",
     verificationStatus: "VERIFIED",
   },
+  {
+    id: "cert-16",
+    productId: "prod-16",
+    certificateNumber: "RK-DEMO-00016",
+    mukhi: 5,
+    origin: "Nepal (Dingla)",
+    dimensions: "21.0 x 19.5 mm",
+    weightGrams: 3.5,
+    inspectionDate: new Date("2026-03-22"),
+    laboratory: "RudraKart Himalayan Gem & Botanical Lab (Academic Demo)",
+    xrayStatus:
+      "Organic vascular continuation from bead core to trunk projection confirmed",
+    microscopicCheck:
+      "Single unbroken endocarp structure without artificial attachment",
+    verificationStatus: "VERIFIED",
+  },
 ];
 
-export const MOCK_PRODUCTS: ProductItem[] = [
+const RAW_MOCK_PRODUCTS: ProductItem[] = [
   {
     id: "prod-1",
     name: "1 Mukhi Chandrakar Rudraksha",
@@ -162,7 +262,6 @@ export const MOCK_PRODUCTS: ProductItem[] = [
         sortOrder: 0,
       },
     ],
-    certificates: [MOCK_CERTIFICATES[0]],
   },
   {
     id: "prod-2",
@@ -191,7 +290,6 @@ export const MOCK_PRODUCTS: ProductItem[] = [
         sortOrder: 0,
       },
     ],
-    certificates: [MOCK_CERTIFICATES[1]],
   },
   {
     id: "prod-3",
@@ -276,7 +374,6 @@ export const MOCK_PRODUCTS: ProductItem[] = [
         sortOrder: 0,
       },
     ],
-    certificates: [MOCK_CERTIFICATES[2]],
   },
   {
     id: "prod-6",
@@ -333,7 +430,6 @@ export const MOCK_PRODUCTS: ProductItem[] = [
         sortOrder: 0,
       },
     ],
-    certificates: [MOCK_CERTIFICATES[3]],
   },
   {
     id: "prod-8",
@@ -446,7 +542,6 @@ export const MOCK_PRODUCTS: ProductItem[] = [
         sortOrder: 0,
       },
     ],
-    certificates: [MOCK_CERTIFICATES[4]],
   },
   {
     id: "prod-15",
@@ -475,7 +570,6 @@ export const MOCK_PRODUCTS: ProductItem[] = [
         sortOrder: 0,
       },
     ],
-    certificates: [MOCK_CERTIFICATES[5]],
   },
   {
     id: "prod-16",
@@ -590,3 +684,12 @@ export const MOCK_PRODUCTS: ProductItem[] = [
     ],
   },
 ];
+
+export const MOCK_PRODUCTS: ProductItem[] = RAW_MOCK_PRODUCTS.map((p) => {
+  const certs = MOCK_CERTIFICATES.filter((c) => c.productId === p.id);
+  return {
+    ...p,
+    certificates: certs.length > 0 ? certs : (p.certificates ?? []),
+  };
+});
+
