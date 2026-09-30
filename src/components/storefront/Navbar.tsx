@@ -53,7 +53,7 @@ export function Navbar() {
       <div className="bg-sacred-900 text-sacred-100 text-[11px] py-1 px-4 sm:px-8 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>Academic E-Commerce Demonstration</span>
+          <span>Authentic Consecrated Himalayan Specimens · Verified Botanical Certificates</span>
         </div>
         <div className="flex items-center gap-4">
           <button

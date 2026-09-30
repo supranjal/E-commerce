@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Rudraksha and Puja Product Catalog",
+  title: "Authentic Nepali Rudraksha Catalog (1–14 Mukhi)",
   description:
-    "Browse Rudraksha beads, malas, accessories, and puja products by category, Mukhi, price, or origin.",
+    "Browse certified natural Nepali Rudraksha beads, rare collector specimens, and sacred Japa malas with digital botanical lab certificates.",
   alternates: { canonical: "/products" },
 };
 

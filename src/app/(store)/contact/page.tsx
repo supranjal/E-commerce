@@ -1,11 +1,11 @@
-import { MapPin, Mail, Phone, Clock, Send } from "lucide-react";
+import { MapPin, Mail, Phone, Clock } from "lucide-react";
 import type { Metadata } from "next";
-import { Button } from "@/components/ui/button";
+import { ContactInquiryForm } from "@/components/storefront/ContactInquiryForm";
 
 export const metadata: Metadata = {
   title: "Contact RudraKart",
   description:
-    "Contact RudraKart with questions about products, orders, or the academic e-commerce demonstration.",
+    "Contact RudraKart with questions about products, orders, or certificate verification.",
   alternates: { canonical: "/contact" },
 };
 
@@ -97,57 +97,7 @@ export default function ContactPage() {
           <h2 className="font-serif text-xl font-bold text-sacred-950">
             Send an Inquiry
           </h2>
-          <form className="space-y-4 text-xs">
-            <div className="space-y-1.5">
-              <label className="font-bold text-sacred-900">Full Name</label>
-              <input
-                type="text"
-                placeholder="e.g. Aarav Sharma"
-                className="w-full px-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600"
-                required
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-sacred-900">Email Address</label>
-              <input
-                type="email"
-                placeholder="e.g. aarav@example.com"
-                className="w-full px-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600"
-                required
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-sacred-900">
-                Interested Mukhi / Query
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. Inquiring about 14 Mukhi certificate or custom silver capping"
-                className="w-full px-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600"
-              />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="font-bold text-sacred-900">Message</label>
-              <textarea
-                rows={4}
-                placeholder="Please describe your requirements..."
-                className="w-full px-3 py-2 rounded-lg border border-sacred-300 bg-sacred-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-saffron-600"
-                required
-              />
-            </div>
-
-            <Button
-              type="button"
-              variant="primary"
-              size="lg"
-              className="w-full gap-2"
-            >
-              <Send className="w-4 h-4" /> Submit Inquiry
-            </Button>
-          </form>
+          <ContactInquiryForm />
         </div>
       </div>
     </div>

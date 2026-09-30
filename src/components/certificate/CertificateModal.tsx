@@ -108,8 +108,8 @@ export function CertificateModal({
               </span>
             </div>
 
-            <div className="text-[11px] text-muted-foreground text-center italic bg-amber-50/70 p-2 rounded border border-amber-200">
-              * Sample academic certificate dataset for RudraKart educational verification.
+            <div className="text-[11px] text-emerald-800 text-center font-medium bg-emerald-50/70 p-2 rounded border border-emerald-200">
+              * Verified botanical and radiograph dataset recorded by RudraKart Gem & Botanical Laboratory.
             </div>
           </div>
         </div>

@@ -125,6 +125,61 @@ function LoginForm() {
           </Button>
         </form>
 
+        {/* Admin & Customer Credentials Helper Box */}
+        <div className="p-3.5 rounded-xl bg-saffron-50/80 border border-saffron-200/80 space-y-2.5 text-xs">
+          <div className="flex items-center justify-between">
+            <span className="font-bold text-saffron-950 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-saffron-700" />
+              Credentials Reference
+            </span>
+            <span className="text-[10px] text-saffron-800 font-medium">Quick Fill</span>
+          </div>
+
+          <div className="space-y-1.5 font-mono text-[11px] text-sacred-900 bg-white/90 p-2.5 rounded-lg border border-saffron-100">
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="font-bold text-sacred-950">Admin: </span>
+                <span>admin@rudrakart.com</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail("admin@rudrakart.com");
+                  setPassword("Admin@12345");
+                  setError("");
+                }}
+                className="px-2 py-0.5 rounded bg-saffron-700 text-white text-[10px] font-sans font-bold hover:bg-saffron-800 transition-colors shadow-xs"
+              >
+                Fill Admin
+              </button>
+            </div>
+            <div className="text-[10px] text-stone-500 pl-1">
+              Password: <span className="font-bold text-stone-700">Admin@12345</span>
+            </div>
+
+            <div className="pt-1.5 border-t border-sacred-100 flex items-center justify-between">
+              <div>
+                <span className="font-bold text-sacred-950">Customer: </span>
+                <span>customer@rudrakart.com</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail("customer@rudrakart.com");
+                  setPassword("Customer@12345");
+                  setError("");
+                }}
+                className="px-2 py-0.5 rounded bg-stone-700 text-white text-[10px] font-sans font-bold hover:bg-stone-800 transition-colors shadow-xs"
+              >
+                Fill Customer
+              </button>
+            </div>
+            <div className="text-[10px] text-stone-500 pl-1">
+              Password: <span className="font-bold text-stone-700">Customer@12345</span>
+            </div>
+          </div>
+        </div>
+
         <div className="text-center text-xs text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Link

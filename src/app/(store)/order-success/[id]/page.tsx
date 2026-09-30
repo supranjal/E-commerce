@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
+import { PendingOrderActions } from "@/components/storefront/PendingOrderActions";
 
 export const metadata: Metadata = {
   title: "Order Details",
@@ -41,8 +42,11 @@ export default async function OrderSuccessPage({ params }: OrderPageProps) {
           Order received
         </h1>
         <p className="text-sm text-muted-foreground">
-          Your order has been saved. Payment and fulfillment statuses below
-          reflect the current order record.
+          {order.paymentStatus === "PAID"
+            ? "Your payment was processed successfully. A confirmation email and tracking link have been dispatched."
+            : order.paymentMethod === "CASH_ON_DELIVERY"
+              ? "Your Cash on Delivery order is confirmed and scheduled for sacred consecration and courier dispatch."
+              : "Your order has been received and logged in our fulfillment registry."}
         </p>
       </div>
 
@@ -57,8 +61,10 @@ export default async function OrderSuccessPage({ params }: OrderPageProps) {
             <span className="font-semibold">{order.status}</span>
           </div>
           <div>
-            <span className="text-muted-foreground block">Payment status</span>
-            <span className="font-semibold">{order.paymentStatus}</span>
+            <span className="text-muted-foreground block">Payment</span>
+            <span className="font-semibold">
+              {order.paymentMethod.replace(/_/g, " ")} · {order.paymentStatus}
+            </span>
           </div>
           <div>
             <span className="text-muted-foreground block">Total</span>
@@ -81,6 +87,9 @@ export default async function OrderSuccessPage({ params }: OrderPageProps) {
             </div>
           ))}
         </div>
+
+        {/* Pending Order Resolution: Complete Payment or Return to Cart */}
+        <PendingOrderActions order={order} />
 
         <div className="flex flex-wrap gap-3 border-t border-sacred-200 pt-4">
           <Button variant="outline" asChild>

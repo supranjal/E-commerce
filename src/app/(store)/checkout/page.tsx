@@ -5,14 +5,11 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ShieldCheck,
   CreditCard,
-  Wallet,
   Truck,
   ArrowRight,
   CheckCircle2,
   Lock,
-  ArrowLeft,
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { formatPrice, getProductImageUrl } from "@/lib/utils";
@@ -376,20 +373,25 @@ export default function CheckoutPage() {
               2. Select Payment Method
             </h2>
             <p className="text-xs text-muted-foreground">
-              Only Cash on Delivery is available. Online payment gateways are
-              not connected.
+              Select your preferred payment method: eSewa, Khalti, International Credit/Debit Card, or Cash on Delivery.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               {/* eSewa */}
-              <label className="p-4 rounded-xl border-2 border-sacred-200 bg-sacred-50 flex items-center justify-between opacity-50 cursor-not-allowed">
+              <label
+                className={`p-4 rounded-xl border-2 cursor-pointer flex items-center justify-between transition-all ${
+                  paymentMethod === "ESEWA"
+                    ? "border-emerald-600 bg-emerald-50/70 shadow-xs"
+                    : "border-sacred-200 bg-white hover:bg-sacred-50"
+                }`}
+              >
                 <div className="flex items-center gap-3">
                   <input
                     type="radio"
                     name="payment"
                     value="ESEWA"
-                    checked={false}
-                    disabled
+                    checked={paymentMethod === "ESEWA"}
+                    onChange={() => setPaymentMethod("ESEWA")}
                     className="text-emerald-600 focus:ring-emerald-500"
                   />
                   <div>
@@ -397,7 +399,7 @@ export default function CheckoutPage() {
                       eSewa Mobile Wallet
                     </span>
                     <span className="text-[11px] text-muted-foreground">
-                      Not configured
+                      Digital wallet · test IDs 9806800001–0005
                     </span>
                   </div>
                 </div>
@@ -407,14 +409,20 @@ export default function CheckoutPage() {
               </label>
 
               {/* Khalti */}
-              <label className="p-4 rounded-xl border-2 border-sacred-200 bg-sacred-50 flex items-center justify-between opacity-50 cursor-not-allowed">
+              <label
+                className={`p-4 rounded-xl border-2 cursor-pointer flex items-center justify-between transition-all ${
+                  paymentMethod === "KHALTI"
+                    ? "border-purple-700 bg-purple-50/70 shadow-xs"
+                    : "border-sacred-200 bg-white hover:bg-sacred-50"
+                }`}
+              >
                 <div className="flex items-center gap-3">
                   <input
                     type="radio"
                     name="payment"
                     value="KHALTI"
-                    checked={false}
-                    disabled
+                    checked={paymentMethod === "KHALTI"}
+                    onChange={() => setPaymentMethod("KHALTI")}
                     className="text-purple-600 focus:ring-purple-500"
                   />
                   <div>
@@ -422,7 +430,7 @@ export default function CheckoutPage() {
                       Khalti Digital Wallet
                     </span>
                     <span className="text-[11px] text-muted-foreground">
-                      Not configured
+                      Digital wallet · test mobiles 9800000000–0004
                     </span>
                   </div>
                 </div>
@@ -431,27 +439,33 @@ export default function CheckoutPage() {
                 </span>
               </label>
 
-              {/* Stripe Card */}
-              <label className="p-4 rounded-xl border-2 border-sacred-200 bg-sacred-50 flex items-center justify-between opacity-50 cursor-not-allowed">
+              {/* International Card */}
+              <label
+                className={`p-4 rounded-xl border-2 cursor-pointer flex items-center justify-between transition-all ${
+                  paymentMethod === "CARD"
+                    ? "border-blue-700 bg-blue-50/70 shadow-xs"
+                    : "border-sacred-200 bg-white hover:bg-sacred-50"
+                }`}
+              >
                 <div className="flex items-center gap-3">
                   <input
                     type="radio"
                     name="payment"
                     value="CARD"
-                    checked={false}
-                    disabled
+                    checked={paymentMethod === "CARD"}
+                    onChange={() => setPaymentMethod("CARD")}
                     className="text-blue-600 focus:ring-blue-500"
                   />
                   <div>
                     <span className="font-bold text-blue-950 block text-sm">
-                      International Card (Stripe-style)
+                      International Card
                     </span>
                     <span className="text-[11px] text-muted-foreground">
-                      Not configured
+                      Visa, Mastercard, Amex · Global test card
                     </span>
                   </div>
                 </div>
-                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-600 text-white">
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-700 text-white">
                   Card
                 </span>
               </label>
@@ -547,13 +561,21 @@ export default function CheckoutPage() {
             disabled={loading}
             className="w-full gap-2 shadow-md text-base"
           >
-            {loading ? "Processing Order..." : `Proceed with ${paymentMethod}`}{" "}
+            {loading
+              ? "Processing Order..."
+              : paymentMethod === "ESEWA"
+                ? "Continue to eSewa Payment"
+                : paymentMethod === "KHALTI"
+                  ? "Continue to Khalti Payment"
+                  : paymentMethod === "CARD"
+                    ? "Proceed to Card Checkout"
+                    : "Place Cash on Delivery order"}{" "}
             <ArrowRight className="w-4 h-4" />
           </Button>
 
           <div className="text-[11px] text-muted-foreground flex items-center justify-center gap-1.5 pt-2">
             <Lock className="w-3.5 h-3.5 text-emerald-600" />
-            256-bit Encrypted Academic Sandbox Checkout
+            256-bit Encrypted Secure Checkout
           </div>
         </div>
       </form>

@@ -38,7 +38,7 @@ export default async function MukhiRoutePage({ params }: MukhiPageProps) {
   let title = "";
   let description = "";
 
-  if (rawMukhi.includes("mukhi")) {
+  if (/^\d+$/.test(rawMukhi) || rawMukhi.includes("mukhi")) {
     const match = rawMukhi.match(/(\d+)/);
     if (match) {
       mukhiNumber = parseInt(match[1], 10);

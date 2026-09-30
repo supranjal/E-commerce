@@ -38,12 +38,19 @@ export async function createOrder(data: CreateOrderInput) {
     if (!userId) {
       return { success: false, error: "Sign in before placing an order." };
     }
-    if (data.paymentMethod !== "CASH_ON_DELIVERY") {
+    const allowedMethods: PaymentMethod[] = [
+      "CASH_ON_DELIVERY",
+      "ESEWA",
+      "KHALTI",
+      "CARD",
+    ];
+    if (!allowedMethods.includes(data.paymentMethod)) {
       return {
         success: false,
-        error: "Online payment is unavailable. Select Cash on Delivery.",
+        error: "Select Cash on Delivery, eSewa, Khalti, or International Card.",
       };
     }
+    const isCashOnDelivery = data.paymentMethod === "CASH_ON_DELIVERY";
     if (
       !data.customerName?.trim() ||
       !data.customerEmail?.includes("@") ||
@@ -115,9 +122,9 @@ export async function createOrder(data: CreateOrderInput) {
           country: data.country?.trim() || "Nepal",
           postalCode: data.postalCode?.trim(),
           notes: data.notes?.trim(),
-          paymentMethod: "CASH_ON_DELIVERY",
-          paymentStatus: "UNPAID",
-          status: "CONFIRMED",
+          paymentMethod: data.paymentMethod,
+          paymentStatus: isCashOnDelivery ? "UNPAID" : "PENDING",
+          status: isCashOnDelivery ? "CONFIRMED" : "PENDING",
           total,
           currency: "NPR",
           items: {
@@ -131,14 +138,16 @@ export async function createOrder(data: CreateOrderInput) {
       });
     });
 
-    try {
-      await sendOrderNotification({
-        order,
-        previousStatus: "PENDING",
-        newStatus: "CONFIRMED",
-      });
-    } catch (error) {
-      console.warn("Order confirmation email dispatch failed:", error);
+    if (isCashOnDelivery) {
+      try {
+        await sendOrderNotification({
+          order,
+          previousStatus: "PENDING",
+          newStatus: "CONFIRMED",
+        });
+      } catch (error) {
+        console.warn("Order confirmation email dispatch failed:", error);
+      }
     }
 
     return {
@@ -311,5 +320,156 @@ export async function getAdminOrders() {
       orders: [],
       error: error.message,
     };
+  }
+}
+
+async function getSessionUser() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user) return null;
+
+  const sessionUser = session.user as any;
+  if (sessionUser.id) {
+    const user = await prisma.user.findUnique({
+      where: { id: sessionUser.id },
+    });
+    if (user) return user;
+  }
+
+  if (sessionUser.email) {
+    const user = await prisma.user.findUnique({
+      where: { email: sessionUser.email.toLowerCase().trim() },
+    });
+    if (user) return user;
+  }
+
+  return null;
+}
+
+export async function updatePendingOrderPaymentMethod(input: {
+  orderNumber: string;
+  newPaymentMethod: PaymentMethod;
+}) {
+  const user = await getSessionUser();
+  if (!user) return { success: false, error: "Sign in to update order." };
+
+  const order = await prisma.order.findFirst({
+    where: {
+      orderNumber: input.orderNumber,
+      OR: [
+        { userId: user.id },
+        { customerEmail: user.email },
+      ],
+    },
+  });
+
+  if (!order) return { success: false, error: "Order not found." };
+  if (order.status !== "PENDING" || order.paymentStatus === "PAID") {
+    return { success: false, error: "Only unpaid pending orders can be updated." };
+  }
+
+  const isCOD = input.newPaymentMethod === "CASH_ON_DELIVERY";
+
+  await prisma.order.update({
+    where: { id: order.id },
+    data: {
+      paymentMethod: input.newPaymentMethod,
+      paymentStatus: isCOD ? "UNPAID" : "PENDING",
+      status: isCOD ? "CONFIRMED" : "PENDING",
+    },
+  });
+
+  return { success: true, paymentMethod: input.newPaymentMethod, isCOD };
+}
+
+export async function cancelAndReturnToCart(orderNumber: string) {
+  const user = await getSessionUser();
+  if (!user) return { success: false, error: "Sign in to modify order." };
+
+  const order = await prisma.order.findFirst({
+    where: {
+      orderNumber,
+      OR: [
+        { userId: user.id },
+        { customerEmail: user.email },
+      ],
+    },
+    include: {
+      items: {
+        include: {
+          product: {
+            include: {
+              images: true,
+              category: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!order) return { success: false, error: "Order not found." };
+  if (order.status !== "PENDING" || order.paymentStatus === "PAID") {
+    return {
+      success: false,
+      error: "Only unpaid pending orders can be returned to cart.",
+    };
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.order.update({
+      where: { id: order.id },
+      data: { status: "CANCELLED", paymentStatus: "FAILED" },
+    });
+
+    for (const item of order.items) {
+      await tx.product.update({
+        where: { id: item.productId },
+        data: { stock: { increment: item.quantity } },
+      });
+    }
+  });
+
+  return {
+    success: true,
+    items: order.items.map((i) => ({
+      product: i.product,
+      quantity: i.quantity,
+    })),
+  };
+}
+
+export async function getMyPendingOrders() {
+  try {
+    const user = await getSessionUser();
+    if (!user) return { success: true, orders: [] };
+
+    const orders = await prisma.order.findMany({
+      where: {
+        OR: [
+          { userId: user.id },
+          { customerEmail: user.email },
+        ],
+        status: "PENDING",
+        paymentStatus: { not: "PAID" },
+      },
+      include: {
+        items: {
+          include: {
+            product: {
+              include: {
+                images: true,
+                category: true,
+                certificates: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return { success: true, orders };
+  } catch {
+    return { success: false, orders: [] };
   }
 }

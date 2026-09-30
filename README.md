@@ -20,7 +20,7 @@ _Technology Stack:_ Next.js 14+ (App Router), TypeScript, Tailwind CSS, shadcn/u
    - Switch between **NPR (Rs.)** and **USD ($)** for storefront price display. Orders are recorded in NPR.
 
 4. **Checkout:**
-   - Cash on Delivery is available. Online payment is unavailable until a real payment gateway is configured.
+   - Cash on Delivery, plus **eSewa** and **Khalti academic sandboxes** using published test logins (no live merchant settlement). Card/Stripe remains unavailable.
 
 5. **Rule-Based Recommendation Engine:**
    - Suggests matching Mukhi creations (e.g. 5 Mukhi Mala with 5 Mukhi Bead), complementary silver caps/storage boxes, and similar price tier beads.

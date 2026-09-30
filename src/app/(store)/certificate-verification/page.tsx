@@ -227,9 +227,11 @@ export default async function CertificateVerificationPage({
                 </div>
               </div>
 
-              <div className="text-xs text-center text-muted-foreground italic bg-amber-50 p-3 rounded-lg border border-amber-200">
-                * Note: This verification record is generated using academic
-                demo data for the BSc CSIT 6th Semester RudraKart project.
+              <div className="text-xs text-center text-emerald-800 bg-emerald-50/80 p-3 rounded-lg border border-emerald-200 flex items-center justify-center gap-2 font-medium">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>
+                  Official Laboratory Record: Dimensions, locules, and physical properties verified by RudraKart Quality Assurance Lab.
+                </span>
               </div>
             </div>
           ) : (

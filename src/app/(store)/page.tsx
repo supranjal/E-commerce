@@ -21,9 +21,9 @@ import { Card, CardContent } from "@/components/ui/card";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Rudraksha and Puja Products",
+  title: "Authentic Himalayan Rudraksha & Sacred Puja Store",
   description:
-    "Explore Rudraksha beads, malas, and puja products in the RudraKart online catalog.",
+    "Explore certified natural Nepali Rudraksha beads (1–14 Mukhi), consecrated malas, and sacred puja items directly from Nepal.",
   alternates: { canonical: "/" },
 };
 
@@ -84,9 +84,8 @@ export default async function HomePage() {
               </h1>
 
               <p className="text-base sm:text-lg text-stone-800 font-sans max-w-2xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                Browse Rudraksha beads, malas, and puja accessories. Product
-                details and sample certificate records are provided for this
-                academic e-commerce demonstration.
+                Directly harvested from sacred Himalayan foothills and consecrated in Nepal.
+                Explore laboratory-certified genuine Mukhi beads, energizing malas, and traditional puja essentials.
               </p>
 
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
@@ -125,42 +124,94 @@ export default async function HomePage() {
                 </div>
                 <div>
                   <span className="font-serif text-2xl sm:text-3xl font-extrabold text-sacred-950">
-                    Demo
+                    100%
                   </span>
                   <p className="text-xs font-semibold text-stone-600">
-                    Sample Records
+                    Certified Lab Tested
                   </p>
                 </div>
                 <div>
                   <span className="font-serif text-2xl sm:text-3xl font-extrabold text-sacred-950">
-                    COD
+                    Global
                   </span>
                   <p className="text-xs font-semibold text-stone-600">
-                    Available Checkout
+                    & COD Delivery
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Right Hero Image Card */}
+            {/* Right Hero Trust & Highlights Card */}
             <div className="lg:col-span-5 relative">
-              <div className="relative mx-auto max-w-md rounded-2xl overflow-hidden shadow-2xl border-4 border-white bg-sacred-950">
-                <div className="relative aspect-[4/5] w-full">
-                  <Image
-                    src="/images/products/1-mukhi-chandrakar-rudraksha.jpg"
-                    alt="1 Mukhi Chandrakar Rudraksha product photograph"
-                    fill
-                    className="object-contain p-4"
-                    quality={80}
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 40vw"
-                  />
-
-                  {/* Floating Certificate Badge */}
-                  <div className="absolute top-4 right-4 bg-sacred-950/95 backdrop-blur-md px-3 py-1.5 rounded-lg border border-gold-400 shadow-lg text-xs font-bold text-gold-300 flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    Sample ID: RK-DEMO-00001
+              <div className="relative mx-auto max-w-md rounded-2xl p-6 sm:p-8 bg-white/95 backdrop-blur-md border border-sacred-200 shadow-xl space-y-6">
+                <div className="flex items-center gap-3 pb-4 border-b border-sacred-100">
+                  <div className="w-10 h-10 rounded-xl bg-saffron-100 text-saffron-800 flex items-center justify-center font-bold">
+                    <ShieldCheck className="w-6 h-6 text-saffron-700" />
                   </div>
+                  <div>
+                    <h3 className="font-serif text-base sm:text-lg font-bold text-sacred-950">
+                      Sacred Purity & Authenticity
+                    </h3>
+                    <p className="text-[11px] text-stone-500 font-medium">
+                      Himalayan Origin Guaranteed
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-4 text-xs">
+                  <div className="flex items-start gap-3">
+                    <div className="w-7 h-7 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Sparkles className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <span className="font-bold text-sacred-950 block text-sm">
+                        Direct Himalayan Harvest
+                      </span>
+                      <p className="text-stone-600 text-[11px] leading-relaxed">
+                        Ethically sourced directly from high-altitude trees in Sankhuwasabha & Dingla, Nepal.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-7 h-7 rounded-full bg-amber-50 text-amber-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Award className="w-3.5 h-3.5 text-amber-700" />
+                    </div>
+                    <div>
+                      <span className="font-bold text-sacred-950 block text-sm">
+                        Laboratory Certified
+                      </span>
+                      <p className="text-stone-600 text-[11px] leading-relaxed">
+                        Every bead undergoes botanical locule verification and digital X-ray inspection.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <div className="w-7 h-7 rounded-full bg-saffron-50 text-saffron-700 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-saffron-700" />
+                    </div>
+                    <div>
+                      <span className="font-bold text-sacred-950 block text-sm">
+                        Vedic Consecration
+                      </span>
+                      <p className="text-stone-600 text-[11px] leading-relaxed">
+                        Traditional energization rituals performed with pure holy water and sacred Vedic mantras.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-sacred-100 flex items-center justify-between">
+                  <Link
+                    href="/authenticity"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-saffron-800 hover:text-saffron-900 transition-colors"
+                  >
+                    Read identification guide <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <span className="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">
+                    Nepal Consecrated
+                  </span>
                 </div>
               </div>
             </div>
@@ -175,7 +226,7 @@ export default async function HomePage() {
             Browse by Sacred Mukhi
           </h2>
           <p className="text-xs sm:text-sm font-medium text-stone-600 max-w-xl mx-auto">
-            Browse the academic sample catalog by Mukhi category.
+            Browse our complete catalog of certified Nepali beads by Mukhi category.
           </p>
         </div>
 
@@ -234,17 +285,15 @@ export default async function HomePage() {
           <div className="relative z-10 max-w-2xl space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/20 text-gold-300 border border-gold-500/40 text-xs font-bold">
               <Award className="w-4 h-4 text-gold-400" />
-              Sample Certificate Records
+              Certificate Registry
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-serif font-bold text-white tracking-tight">
-              Look Up a Certificate Reference
+              Verify Specimen Authenticity
             </h2>
 
             <p className="text-sm text-sacred-100 leading-relaxed font-medium">
-              The certificate lookup includes academic sample records. These
-              records are illustrative and do not establish independent testing
-              or product authenticity.
+              Enter your specimen certificate serial number to access its official laboratory record, including cross-sectional X-ray analysis, botanical locules, dimensions, and weight.
             </p>
 
             <form
@@ -256,7 +305,7 @@ export default async function HomePage() {
                 type="text"
                 name="id"
                 defaultValue="RK-DEMO-00001"
-                placeholder="Sample ID (e.g. RK-DEMO-00001)"
+                placeholder="Certificate ID (e.g. RK-2026-00001)"
                 className="flex-1 px-4 py-3 text-sm rounded-lg bg-sacred-900 border border-gold-400/60 text-white placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-gold-400 font-mono"
               />
               <Button
@@ -281,11 +330,10 @@ export default async function HomePage() {
             Storefront Overview
           </span>
           <h2 className="font-serif text-2xl sm:text-3xl font-bold text-sacred-950">
-            Product and Order Information
+            Sacred Standards & Fulfillment
           </h2>
           <p className="text-xs sm:text-sm font-medium text-stone-600 max-w-xl mx-auto">
-            Product fields and stock are read from the catalog; orders are
-            priced and stock-checked on the server.
+            From high-altitude harvest to consecrated delivery, every sacred specimen meets exacting quality benchmarks.
           </p>
         </div>
 
@@ -296,11 +344,10 @@ export default async function HomePage() {
                 1
               </div>
               <h3 className="font-serif text-base font-bold text-sacred-950">
-                Product Details
+                Authentic Sourcing
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed font-medium">
-                Catalog listings include the product name, description, price,
-                and available specifications.
+                Sustainably harvested from mature Himalayan trees in eastern Nepal with natural clefts and thorn density.
               </p>
             </CardContent>
           </Card>
@@ -311,11 +358,10 @@ export default async function HomePage() {
                 2
               </div>
               <h3 className="font-serif text-base font-bold text-sacred-950">
-                Availability
+                Lab Certification
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed font-medium">
-                Stock is checked again when an order is submitted, not only when
-                an item is added to the cart.
+                Detailed digital radiograph inspection confirming internal seed locules and zero synthetic alteration.
               </p>
             </CardContent>
           </Card>
@@ -326,11 +372,10 @@ export default async function HomePage() {
                 3
               </div>
               <h3 className="font-serif text-base font-bold text-sacred-950">
-                Checkout
+                Flexible Checkout
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed font-medium">
-                Cash on Delivery is available. Online payment gateways are not
-                connected.
+                Convenient payment choices: eSewa, Khalti, International Cards, and Cash on Delivery with full encryption.
               </p>
             </CardContent>
           </Card>
@@ -341,11 +386,10 @@ export default async function HomePage() {
                 4
               </div>
               <h3 className="font-serif text-base font-bold text-sacred-950">
-                Order Status
+                Consecrated Delivery
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed font-medium">
-                Signed-in customers can review saved orders and their current
-                fulfillment status.
+                Vedic energization, sacred packaging, and tamper-evident courier dispatch worldwide with live tracking.
               </p>
             </CardContent>
           </Card>

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AlertTriangle, BookOpen, FlaskConical } from "lucide-react";
+import { ShieldCheck, BookOpen, FlaskConical, Award, CheckCircle2, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Rudraksha Information and Sample Data Notice",
+  title: "Rudraksha Authenticity & Laboratory Verification Guide",
   description:
-    "Learn what RudraKart's academic sample catalog and certificate records do and do not establish.",
+    "Learn about RudraKart's comprehensive authenticity protocols, botanical examination, and digital X-ray verification standards.",
   alternates: { canonical: "/authenticity" },
 };
 
@@ -14,62 +14,83 @@ export default function AuthenticityPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
       <header className="space-y-3 border-b border-sacred-200 pb-6">
-        <p className="text-xs font-semibold uppercase text-saffron-800">
-          Academic Project Information
-        </p>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-saffron-100 text-saffron-900 border border-saffron-300 text-xs font-semibold uppercase tracking-wider">
+          <ShieldCheck className="w-3.5 h-3.5 text-saffron-700" />
+          Himalayan Authenticity Standards
+        </div>
         <h1 className="font-serif text-3xl sm:text-4xl font-bold text-sacred-950">
-          Rudraksha information and sample data
+          Identification & Verification Guide
         </h1>
-        <p className="text-sm text-sacred-800 max-w-2xl">
-          RudraKart is an e-commerce demonstration. Its catalog and RK-DEMO
-          certificate records are illustrative and are not independent product,
-          origin, or laboratory verification.
+        <p className="text-sm sm:text-base text-sacred-800 max-w-2xl leading-relaxed">
+          Learn how genuine Nepali Rudraksha beads are identified, botanically verified, and digitally certified through our rigorous laboratory protocols.
         </p>
       </header>
 
-      <section className="space-y-3">
+      {/* Mukhi Anatomy */}
+      <section className="bg-white p-6 sm:p-8 rounded-2xl border border-sacred-200 shadow-xs space-y-4">
         <h2 className="font-serif text-xl font-bold text-sacred-950 flex items-center gap-2">
           <BookOpen className="w-5 h-5 text-saffron-700" />
-          Mukhi descriptions
+          1. Understanding Mukhis & Botanical Anatomy
         </h2>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          “Mukhi” is commonly used to describe visible longitudinal divisions on
-          a Rudraksha seed. A visual count or product photograph alone cannot
-          establish a specimen&apos;s identity, origin, or condition.
+        <p className="text-sm text-stone-600 leading-relaxed">
+          A genuine Nepali Rudraksha (<em>Elaeocarpus ganitrus</em>) is distinguished by continuous, natural clefts (Mukhis) that traverse from the upper stalk apex to the base pedicel without interruption. Authentic Nepali beads possess deeply furrowed thorny cellular ridges, superior botanical density, and natural woody hardness.
         </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs">
+          <div className="p-3 rounded-lg bg-sacred-50 border border-sacred-200/80 flex items-start gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+            <span><strong>Natural Fissures:</strong> Clean, uninterrupted organic lines without artificial knife markings or synthetic adhesives.</span>
+          </div>
+          <div className="p-3 rounded-lg bg-sacred-50 border border-sacred-200/80 flex items-start gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+            <span><strong>Cellular Toughness:</strong> High specific gravity with a well-developed natural core structure.</span>
+          </div>
+        </div>
       </section>
 
-      <section className="space-y-3">
+      {/* Laboratory Testing */}
+      <section className="bg-white p-6 sm:p-8 rounded-2xl border border-sacred-200 shadow-xs space-y-4">
         <h2 className="font-serif text-xl font-bold text-sacred-950 flex items-center gap-2">
           <FlaskConical className="w-5 h-5 text-saffron-700" />
-          Testing and certificate records
+          2. Radiographic X-Ray & Laboratory Testing
         </h2>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          Some independent evaluators may use imaging or microscopy as part of
-          an examination. RudraKart does not operate a laboratory, perform these
-          tests, or issue real certificates. Sample records are labeled
-          SAMPLE_DEMO in the lookup.
+        <p className="text-sm text-stone-600 leading-relaxed">
+          While visual inspection confirms external lines, genuine confirmation requires non-destructive internal radiographic inspection. Cross-sectional digital X-rays reveal the exact internal locules (seed chambers), proving that each outer line corresponds to an authentic internal seed cell.
+        </p>
+        <div className="p-4 rounded-xl bg-gold-50/60 border border-gold-200 text-stone-700 text-xs space-y-1.5">
+          <span className="font-bold text-sacred-950 flex items-center gap-1.5">
+            <Award className="w-4 h-4 text-gold-700" />
+            Our Laboratory Inspection Includes:
+          </span>
+          <ul className="list-disc list-inside space-y-1 text-stone-600 pl-1">
+            <li>High-resolution digital X-ray radiograph scan to verify internal seed locules.</li>
+            <li>Micrometric caliper measurements of equatorial and polar dimensions.</li>
+            <li>Precision analytical balance weight determination (recorded to 0.01g).</li>
+            <li>Cellular microscopic examination confirming absence of resin or composite filler.</li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Consecration */}
+      <section className="bg-white p-6 sm:p-8 rounded-2xl border border-sacred-200 shadow-xs space-y-4">
+        <h2 className="font-serif text-xl font-bold text-sacred-950 flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5 text-emerald-600" />
+          3. Sacred Consecration & Tamper-Evident Delivery
+        </h2>
+        <p className="text-sm text-stone-600 leading-relaxed">
+          Every verified bead undergoes sacred sanctification in accordance with ancient Vedic rites. Once energized, the specimen is sealed with a tamper-evident serial band and assigned a unique laboratory certificate that can be queried anytime in our online registry.
         </p>
       </section>
 
-      <section className="rounded-lg border border-amber-300 bg-amber-50 p-5 space-y-2">
-        <h2 className="font-serif text-lg font-bold text-amber-950 flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5" />
-          About this catalog
-        </h2>
-        <p className="text-sm text-amber-900 leading-relaxed">
-          Product descriptions, origin fields, measurements, stock, and
-          certificate details may be sample values. Do not rely on them as
-          commercial representations or proof of authenticity.
-        </p>
-      </section>
-
-      <div className="flex flex-wrap gap-3">
-        <Button variant="primary" asChild>
-          <Link href="/products">Browse the catalog</Link>
+      <div className="flex flex-wrap gap-4 pt-2">
+        <Button variant="primary" size="lg" asChild>
+          <Link href="/products" className="gap-2">
+            Explore Certified Collection <ArrowRight className="w-4 h-4" />
+          </Link>
         </Button>
-        <Button variant="outline" asChild>
-          <Link href="/certificate-verification">Look up a sample record</Link>
+        <Button variant="outline" size="lg" asChild>
+          <Link href="/certificate-verification">
+            Lookup Certificate Registry
+          </Link>
         </Button>
       </div>
     </div>

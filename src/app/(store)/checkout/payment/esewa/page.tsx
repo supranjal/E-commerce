@@ -1,5 +1,5 @@
-import { OnlinePaymentUnavailable } from "@/components/storefront/OnlinePaymentUnavailable";
+import { SandboxWalletPayment } from "@/components/storefront/SandboxWalletPayment";
 
 export default function EsewaPaymentPage() {
-  return <OnlinePaymentUnavailable />;
+  return <SandboxWalletPayment gateway="ESEWA" />;
 }

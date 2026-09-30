@@ -14,6 +14,7 @@ import {
   Package,
   AlertCircle,
   Sparkles,
+  MessageCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAdminOrders, updateOrderStatus } from "@/actions/order-actions";
@@ -98,6 +99,43 @@ export default function AdminOrdersPage() {
     }
   };
 
+  const handleOpenWhatsApp = (order: any) => {
+    const itemsList =
+      order.items && order.items.length > 0
+        ? order.items
+            .map(
+              (i: any) =>
+                `• ${i.product?.name || "Sacred Specimen"} (Qty: ${i.quantity || 1})`,
+            )
+            .join("\n")
+        : "• Authentic Consecrated Rudraksha Specimen";
+
+    const trackingText = order.trackingNumber
+      ? `\n🚚 Courier Tracking: ${order.trackingNumber}`
+      : "";
+
+    const message = [
+      `Namaste ${order.customerName} 🙏,`,
+      `Your RudraKart order has been confirmed!`,
+      ``,
+      `📦 Order Reference: ${order.orderNumber || order.id}`,
+      `📿 Specimens Ordered:`,
+      itemsList,
+      ``,
+      `💰 Total: ${order.currency || "NPR"} ${order.total?.toLocaleString()}`,
+      `💳 Payment: ${order.paymentMethod} (${order.paymentStatus})`,
+      `📍 Delivery: ${order.shippingAddress || "Nepal"}, ${order.city || ""}`,
+      `✨ Fulfillment Status: ${order.status}${trackingText}`,
+      ``,
+      `Your sacred Himalayan specimen is consecrated with traditional Vedic rituals prior to dispatch.`,
+      `Thank you for trusting RudraKart Nepal.`,
+    ].join("\n");
+
+    const targetPhone = "9779869624948";
+    const waUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(message)}`;
+    window.open(waUrl, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Header */}
@@ -108,7 +146,7 @@ export default function AdminOrdersPage() {
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
             Fulfillment lifecycle management, status transition triggers,
-            duplicate protection, and automated email dispatches.
+            instant WhatsApp customer confirmation (+9779869624948), and automated dispatches.
           </p>
         </div>
 
@@ -139,7 +177,7 @@ export default function AdminOrdersPage() {
                 <th className="p-4">Payment</th>
                 <th className="p-4">Fulfillment Status Transition</th>
                 <th className="p-4">Tracking Number</th>
-                <th className="p-4 text-right">Action</th>
+                <th className="p-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-sacred-100">
@@ -254,9 +292,9 @@ export default function AdminOrdersPage() {
                       />
                     </td>
 
-                    {/* Update Action Button */}
+                    {/* Update & WhatsApp Action Buttons */}
                     <td className="p-4 text-right">
-                      <div className="flex flex-col items-end gap-2">
+                      <div className="flex flex-col items-end gap-1.5">
                         <Button
                           variant="primary"
                           size="sm"
@@ -271,6 +309,16 @@ export default function AdminOrdersPage() {
                           )}
                           {isSelectedSame ? "Current" : "Apply Status"}
                         </Button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleOpenWhatsApp(order)}
+                          title="Generate dynamic WhatsApp confirmation message to +9779869624948"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-[11px] shadow-xs transition-colors"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                          <span>WhatsApp</span>
+                        </button>
                       </div>
                     </td>
                   </tr>

@@ -1,5 +1,5 @@
-import { OnlinePaymentUnavailable } from "@/components/storefront/OnlinePaymentUnavailable";
+import { SandboxWalletPayment } from "@/components/storefront/SandboxWalletPayment";
 
 export default function KhaltiPaymentPage() {
-  return <OnlinePaymentUnavailable />;
+  return <SandboxWalletPayment gateway="KHALTI" />;
 }

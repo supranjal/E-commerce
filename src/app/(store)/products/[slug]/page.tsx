@@ -12,6 +12,7 @@ import {
   Maximize2,
   FileCheck2,
   ArrowLeft,
+  Star,
 } from "lucide-react";
 import { getProductBySlug } from "@/actions/product-actions";
 import { getRecommendationsForProduct } from "@/lib/recommendations";
@@ -19,6 +20,7 @@ import { getProductImageUrl } from "@/lib/utils";
 import { CertificateModal } from "@/components/certificate/CertificateModal";
 import { ProductDetailActions } from "@/components/storefront/ProductDetailActions";
 import { ProductCard } from "@/components/storefront/ProductCard";
+import { ProductReviews } from "@/components/storefront/ProductReviews";
 import { Badge } from "@/components/ui/badge";
 
 export const dynamic = "force-dynamic";
@@ -224,6 +226,25 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold text-sacred-950">
               {product.name}
             </h1>
+
+            <div className="flex items-center gap-3 pt-1">
+              <a
+                href="#customer-reviews"
+                className="inline-flex items-center gap-2 text-xs text-saffron-800 hover:text-saffron-950 font-medium group transition-colors"
+              >
+                <div className="flex items-center text-gold-500">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star
+                      key={s}
+                      className="w-3.5 h-3.5 fill-gold-500 text-gold-600"
+                    />
+                  ))}
+                </div>
+                <span className="group-hover:underline">
+                  Ratings & Verified Customer Reviews
+                </span>
+              </a>
+            </div>
           </div>
 
           <p className="text-sm text-sacred-800 leading-relaxed">
@@ -305,6 +326,13 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           <ProductDetailActions product={product} />
         </div>
       </div>
+
+      {/* CUSTOMER REVIEWS & RATINGS */}
+      <ProductReviews
+        productId={product.id}
+        productName={product.name}
+        productSlug={product.slug}
+      />
 
       {/* RECOMMENDATIONS SECTION */}
       <div className="pt-12 border-t border-sacred-200 space-y-12">

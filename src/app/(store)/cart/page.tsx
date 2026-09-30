@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -9,10 +10,14 @@ import {
   Minus,
   ArrowRight,
   ArrowLeft,
+  Clock,
+  AlertTriangle,
 } from "lucide-react";
 import { useCartStore } from "@/lib/cart-store";
 import { formatPrice, getProductImageUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { getMyPendingOrders } from "@/actions/order-actions";
+import { PendingOrderActions } from "@/components/storefront/PendingOrderActions";
 
 export default function CartPage() {
   const {
@@ -25,29 +30,130 @@ export default function CartPage() {
     usdRate,
   } = useCartStore();
 
+  const [pendingOrders, setPendingOrders] = useState<any[]>([]);
+  const [loadingPending, setLoadingPending] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    getMyPendingOrders()
+      .then((res) => {
+        if (isMounted && res.success && res.orders) {
+          setPendingOrders(res.orders);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (isMounted) setLoadingPending(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const subtotal = getSubtotal();
   const total = subtotal;
 
   if (items.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-20 text-center space-y-6">
-        <div className="w-20 h-20 rounded-full bg-sacred-100 flex items-center justify-center mx-auto text-sacred-400">
-          <ShoppingBag className="w-10 h-10" />
-        </div>
-        <div className="space-y-2">
-          <h1 className="font-serif text-3xl font-bold text-sacred-950">
-            Your Sacred Cart is Empty
-          </h1>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            You have not added any products yet. Browse the catalog to get
-            started.
-          </p>
-        </div>
-        <Button variant="primary" size="lg" asChild>
-          <Link href="/products" className="gap-2">
-            Explore Collection <ArrowRight className="w-4 h-4" />
-          </Link>
-        </Button>
+      <div className="max-w-4xl mx-auto px-4 py-16 space-y-8">
+        {/* Pending Orders Notice if user has unpaid orders */}
+        {pendingOrders.length > 0 ? (
+          <div className="space-y-6">
+            <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-start gap-3">
+              <Clock className="w-5 h-5 text-amber-700 mt-0.5 flex-shrink-0" />
+              <div className="space-y-1">
+                <h3 className="font-serif font-bold text-amber-950 text-sm">
+                  You Have Pending Orders Awaiting Payment
+                </h3>
+                <p className="text-xs text-amber-800">
+                  Your cart items may have been reserved under an uncompleted order. You can complete payment directly or cancel the order to restore the items back into your active cart.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {pendingOrders.map((order) => (
+                <div
+                  key={order.id}
+                  className="p-5 rounded-2xl bg-white border border-sacred-200 shadow-xs space-y-4"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-sacred-100 pb-3">
+                    <div>
+                      <span className="text-xs text-muted-foreground">Order Reference</span>
+                      <h4 className="font-mono font-bold text-sacred-950 text-base">
+                        {order.orderNumber}
+                      </h4>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-800">
+                        {order.status}
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-red-50 text-red-700 border border-red-200">
+                        {order.paymentStatus}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Order items */}
+                  <div className="space-y-2 text-xs">
+                    {order.items?.map((item: any) => (
+                      <div key={item.id} className="flex justify-between items-center text-sacred-900">
+                        <span>
+                          {item.product?.name} × {item.quantity}
+                        </span>
+                        <span className="font-bold">
+                          {order.currency} {(item.price * item.quantity).toLocaleString()}
+                        </span>
+                      </div>
+                    ))}
+                    <div className="pt-2 border-t border-dashed border-sacred-200 flex justify-between font-bold text-sm text-sacred-950">
+                      <span>Total Amount:</span>
+                      <span className="text-saffron-800">
+                        {order.currency} {order.total.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Quick resolution buttons */}
+                  <PendingOrderActions order={order} />
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center pt-4">
+              <Button variant="outline" asChild>
+                <Link href="/products" className="gap-2">
+                  <ArrowLeft className="w-4 h-4" /> Continue Shopping
+                </Link>
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center space-y-6 py-8">
+            <div className="w-20 h-20 rounded-full bg-sacred-100 flex items-center justify-center mx-auto text-sacred-400">
+              <ShoppingBag className="w-10 h-10" />
+            </div>
+            <div className="space-y-2">
+              <h1 className="font-serif text-3xl font-bold text-sacred-950">
+                Your Sacred Cart is Empty
+              </h1>
+              <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                You have not added any products yet. Browse the catalog to get
+                started, or check your account for any pending orders.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Button variant="primary" size="lg" asChild>
+                <Link href="/products" className="gap-2">
+                  Explore Collection <ArrowRight className="w-4 h-4" />
+                </Link>
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <Link href="/account">View Pending Orders</Link>
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -70,6 +176,23 @@ export default function CartPage() {
           Clear Cart
         </button>
       </div>
+
+      {pendingOrders.length > 0 && (
+        <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2.5">
+            <Clock className="w-4 h-4 text-amber-700 flex-shrink-0" />
+            <span className="text-amber-900 font-medium">
+              You have <strong>{pendingOrders.length} pending order(s)</strong> awaiting payment (Reference: #{pendingOrders[0].orderNumber}).
+            </span>
+          </div>
+          <Link
+            href="/account"
+            className="text-saffron-800 font-bold hover:underline inline-flex items-center gap-1"
+          >
+            Review & Complete Payment <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
         {/* Items List */}

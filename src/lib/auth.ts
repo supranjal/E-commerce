@@ -57,6 +57,12 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
+      if (!token?.id) {
+        return {
+          user: undefined,
+          expires: new Date(0).toISOString(),
+        } as any;
+      }
       if (session.user) {
         (session.user as any).id = token.id as string;
         (session.user as any).role = (token.role as string) || "CUSTOMER";
